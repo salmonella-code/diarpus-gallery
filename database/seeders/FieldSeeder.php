@@ -15,15 +15,18 @@ class FieldSeeder extends Seeder
     public function run()
     {
         Field::create([
-            'name' => 'Bid.Perpustakaan'
+            'name' => 'Bid.Perpustakaan',
+            'slug' => 'bid_perpustakaan'
         ]);
 
         Field::create([
-            'name' => 'Bid.Perlindungan dan Penyelamatan Arsip'
+            'name' => 'Bid.Perlindungan dan Penyelamatan Arsip',
+            'slug' => 'bid_perlindungan_dan_penyelamatan_arsip'
         ]);
 
         Field::create([
-            'name' => 'Bid.Pengelolaan Arsip'
+            'name' => 'Bid.Pengelolaan Arsip',
+            'slug' => 'bid_pengelolaan_arsip'
         ]);
     }
 }

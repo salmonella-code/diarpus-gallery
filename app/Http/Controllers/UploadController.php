@@ -4,26 +4,28 @@ namespace App\Http\Controllers;
 
 use App\Models\TemporaryFile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class UploadController extends Controller
 {
-    public function photo(Request $request)
+    public function uploadMedia(Request $request)
     {
         if ($request->hasFile('path')) {
             $file = $request->file('path');
-            $fileName = time() . '.' . $file->getClientOriginalExtension();
-            $folder = uniqid().'-'.now()->timestamp;
-            $file->move('photo/tmp/'.$folder, $fileName);
+            $fileName = uniqid() . time() . '.' . $file->getClientOriginalExtension();
+            $file->move('tmp/uploads/', $fileName);
 
-            TemporaryFile::create([
-                'folder' => $folder,
-                'filename' => $fileName,
-            ]);
-
-            return $folder;
+            return response()->json($fileName);
         }
 
         return '';
+    }
+
+    public function destroyMedia(Request $request)
+    {
+        $payLoad = json_decode($request->getContent());
+        File::delete('tmp/uploads/'.$payLoad);
+        return response()->json($payLoad);
     }
 
     public function avatar(Request $request)

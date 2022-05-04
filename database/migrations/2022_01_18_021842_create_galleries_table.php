@@ -17,9 +17,10 @@ class CreateGalleriesTable extends Migration
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained('users', 'id')->cascadeOnUpdate()->nullOnDelete();
             $table->foreignId('field_id');
+            $table->string('name');
+            $table->string('slug');
             $table->enum('category', ['photo','video']);
             $table->text('description');
-            $table->string('url_gallery')->nullable();
             $table->timestamps();
 
             $table->foreign('field_id')->references('id')->on('fields')->cascadeOnDelete()->cascadeOnUpdate();

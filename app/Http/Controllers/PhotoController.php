@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Field;
 use App\Models\Gallery;
-use App\Models\TemporaryFile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use File;
 
 class PhotoController extends Controller
@@ -26,23 +26,21 @@ class PhotoController extends Controller
     public function store(Request $request, $gallery)
     {
         $request->validate([
+            'name' => ['required', 'string'],
             'description' => ['required'],
         ]);
 
-        $temporaryFile = TemporaryFile::where('folder', $request->path)->first();
-        if ($temporaryFile) {
-            $old = 'photo/tmp/'.$temporaryFile->folder.'/'.$temporaryFile->filename;
-            $new = 'photo/'.$temporaryFile->filename;
-            File::move($old, $new);
-            Gallery::create([
-                'user_id' => auth()->user()->id,
-                'field_id' => $gallery,
-                'category' => 'photo',
-                'description' => $request->description,
-                'url_gallery' => $temporaryFile->filename
-            ]);
-            rmdir('photo/tmp/' . $temporaryFile->folder);
-            $temporaryFile->delete();
+        $media = Gallery::create([
+            'user_id' => auth()->user()->id,
+            'field_id' => $gallery,
+            'name' => $request->name,
+            'slug' => Str::slug($request->name),
+            'category' => 'photo',
+            'description' => $request->description,
+        ]);
+
+        foreach ($request->medias as $file) {
+            $media->addMedia('tmp/uploads/' . $file)->toMediaCollection('photo');
         }
 
         return redirect()->route('photo.index', $gallery)->withSuccess('Berhasil menambah foto');

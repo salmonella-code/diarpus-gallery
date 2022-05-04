@@ -23,11 +23,11 @@
                 <div class="col-12 col-sm-4">
                     <div class="card border-secondary shadow">
                         <div class="product-wrap">
-                            <img src="{{ asset('photo/' . $item->url_gallery) }}" class="card-img-top img-fluid"
+                            <img src="{{ $item->getFirstMediaUrl('photo', 'thumb') }}" class="card-img-top img-fluid"
                                 alt="foto" id="photo">
                             <div class="card-img-overlay d-flex align-items-center justify-content-center">
                                 <div class="d-flex">
-                                    <a href="{{ asset('photo/' . $item->url_gallery) }}"
+                                    <a href="{{ $item->getFirstMediaUrl('photo', 'thumb') }}"
                                         class="btn btn-outline-info me-1" target="_blank">
                                         <i class="fas fa-images fa-fw"></i>
                                     </a>
@@ -53,10 +53,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card-body">
-                            <div class="card-text">
-                                {!! Str::limit(strip_tags($item->description), 50) !!}
-                            </div>
+                        <div class="card-header py-2 text-capitalize">
+                            <h5><strong>{{ $item->name }}</strong></h5>
                         </div>
                         <div class="card-footer bg-transparent py-1">
                             <span><strong>Author: {{ $item->user->name }}</strong></span>

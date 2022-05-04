@@ -65,7 +65,8 @@ Route::middleware('auth')->group(function(){
     // end video
     
     // uploader
-    Route::post('uploadPhoto', [UploadController::class, 'photo'])->name('upload.photo');
+    Route::post('upload/media', [UploadController::class, 'uploadMedia'])->name('upload.media');
+    Route::delete('destroy/media', [UploadController::class, 'destroyMedia'])->name('destroy.media');
     Route::post('upload/avatar', [UploadController::class, 'avatar'])->name('upload.avatar');
     Route::post('upload/video', [UploadController::class, 'video'])->name('upload.video');
     // uploader

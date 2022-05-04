@@ -13,9 +13,18 @@
             <form action="{{ route('photo.store', $galleries->id) }}" method="post" enctype="multipart/form-data">
                 @csrf
                 <div class="form-group mb-3">
+                    <label for="name" class="text-capitalize">nama<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control  @error('name') is-invalid @enderror" id="name" name="name" placeholder="Masukkan nama" value="{{ old('name') }}">
+                    @error('name')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>"{{ $message }}"</strong>
+                        </span>
+                    @enderror
+                </div>
+                <div class="form-group mb-3">
                     <label for="description" class="text-capitalize">keterangan<span class="text-danger">*</span></label>
                     <textarea class="form-control @error('description') is-invalid @enderror" id="description"
-                        name="description" placeholder="Masukkan keterangan">{{ old('description') }}</textarea>
+                        name="description" placeholder="Masukkan keterangan">{!! old('description') !!}</textarea>
                     @error('description')
                         <div class="invalid-feedback">
                             "{{ $message }}"
@@ -26,7 +35,7 @@
                 <div class="form-group mb-3">
                     <label for="path" class="text-capitalize">Foto<span class="text-danger">*</span></label><br>
                     <span class="text-muted"><i>Format yang didukung: jpeg, jpg, png</i></span>
-                    <input type="file" name="path" id="path" value="{{ old('path') }}"/>
+                    <input type="file" name="path" id="path" value="{{ old('path') }}" multiple/>
                     <span>{{ $errors->first('path') }}</span>
                 </div>
                 <button type="submit" class="btn btn-primary">Simpan</button>
@@ -47,9 +56,6 @@
             })
             .catch(error => {
                 console.error('Oops, something went wrong!');
-                console.error(
-                    'Please, report the following error on https://github.com/ckeditor/ckeditor5/issues with the build id and the error stack trace:'
-                );
                 console.warn('Build id: bznspbhgo6qx-32n13df5w9i6');
                 console.error(error);
             });
@@ -76,10 +82,44 @@
         });
         FilePond.setOptions({
             server: {
-                url: '/uploadPhoto',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
+                process: (fieldName, file, metadata, load, error, progress, abort, transfer, options) => {
+                    const formData = new FormData();
+                    formData.append(fieldName, file, file.name);
+                    const request = new XMLHttpRequest();
+                    request.open('POST', '/upload/media');
+                    request.setRequestHeader("X-CSRF-TOKEN", '{{ csrf_token() }}'); 
+
+                    request.onload = function () {
+                        if (request.status == 200 && this.readyState === XMLHttpRequest.DONE) {
+                            // the load method accepts either a string (id) or an object
+                            load(request.responseText);
+                            $('form').append('<input type="hidden" name="medias[]" value='+request.responseText+'>')
+                        } else {
+                            // Can call the error method if something is wrong, should exit after
+                            error('oh no');
+                        }
+                    };
+                    request.send(formData);
+                    return {
+                        abort: () => {
+                            // This function is entered if the user has tapped the cancel button
+                            request.abort();
+
+                            // Let FilePond know the request has been cancelled
+                            abort();
+                        },
+                    };
+                },
+                revert: {
+                    url: '/destroy/media',
+                    onload: function (response) {
+                        const name = JSON.parse(response);
+                        $('form').find('input[name="medias[]"][value="' + name + '"]').remove()
+                    },
+                }
             },
         });
     </script>
