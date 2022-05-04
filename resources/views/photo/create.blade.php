@@ -26,7 +26,7 @@
                 <div class="form-group mb-3">
                     <label for="path" class="text-capitalize">Foto<span class="text-danger">*</span></label><br>
                     <span class="text-muted"><i>Format yang didukung: jpeg, jpg, png</i></span>
-                    <input type="file" name="path" id="path" value="{{ old('path') }}" />
+                    <input type="file" name="path" id="path" value="{{ old('path') }}"/>
                     <span>{{ $errors->first('path') }}</span>
                 </div>
                 <button type="submit" class="btn btn-primary">Simpan</button>

@@ -20,7 +20,7 @@
     @forelse ($galleries->galleries->chunk(3) as $photo)
         <div class="row">
             @foreach ($photo as $item)
-                <div class="col-4">
+                <div class="col-12 col-sm-4">
                     <div class="card border-secondary shadow">
                         <div class="product-wrap">
                             <img src="{{ asset('photo/' . $item->url_gallery) }}" class="card-img-top img-fluid"
@@ -71,22 +71,3 @@
         <p class="text-center">Belum ada foto</p>
     @endforelse
 @endsection
-
-@push('script')
-    <script>
-        var elem = document.getElementById("photo");
-
-        function openFullscreen() {
-            elem.classList.add('active');
-            if (elem.requestFullscreen) {
-                elem.requestFullscreen();
-            } else if (elem.webkitRequestFullscreen) {
-                /* Safari */
-                elem.webkitRequestFullscreen();
-            } else if (elem.msRequestFullscreen) {
-                /* IE11 */
-                elem.msRequestFullscreen();
-            }
-        }
-    </script>
-@endpush

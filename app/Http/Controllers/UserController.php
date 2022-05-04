@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
 use App\Models\User;
+use App\Models\Field;
 use Illuminate\Support\Facades\Hash;
 use File;
 
@@ -17,13 +18,14 @@ class UserController extends Controller
 
     public function create()
     {
-        return view('user.create');
+        $fields = Field::all();
+        return view('user.create', compact('fields'));
     }
 
     public function store(UserRequest $request)
     {
         User::create([
-            'field_id' => null,
+            'field_id' => $request->field,
             'nip' => $request->nip,
             'group' => $request->group,
             'position' => $request->position,
