@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Gallery extends Model implements HasMedia
+class Gallery extends Model
 {
-    use InteractsWithMedia;
+    use HasFactory;
 
     protected $fillable = [
         'user_id', 
@@ -28,5 +28,10 @@ class Gallery extends Model implements HasMedia
     public function field()
     {
         return $this->belongsTo(Field::class, 'field_id');
+    }
+
+    public function files()
+    {
+        return $this->hasMany(File::class, 'gallery_id');
     }
 }

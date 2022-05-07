@@ -23,13 +23,13 @@
                 <div class="col-12 col-sm-4">
                     <div class="card border-secondary shadow">
                         <div class="product-wrap">
-                            <img src="{{ $item->getFirstMediaUrl('photo', 'thumb') }}" class="card-img-top img-fluid"
+                            <img src="{{ asset('photo/'.$item->files[0]->folder.'/'.$item->files[0]->name) }}" class="card-img-top img-fluid"
                                 alt="foto" id="photo">
                             <div class="card-img-overlay d-flex align-items-center justify-content-center">
                                 <div class="d-flex">
-                                    <a href="{{ $item->getFirstMediaUrl('photo', 'thumb') }}"
+                                    <a href="{{ route('photo.download', ['gallery' => $galleries->id, 'photo' => $item->id]) }}"
                                         class="btn btn-outline-info me-1" target="_blank">
-                                        <i class="fas fa-images fa-fw"></i>
+                                        <i class="fas fa-download fa-fw"></i>
                                     </a>
                                     <a href="{{ route('photo.show', ['gallery' => $galleries->id, 'photo' => $item->id]) }}"
                                         class="btn btn-outline-primary me-1">
@@ -53,7 +53,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card-header py-2 text-capitalize">
+                        <div class="card-header py-2">
                             <h5><strong>{{ $item->name }}</strong></h5>
                         </div>
                         <div class="card-footer bg-transparent py-1">

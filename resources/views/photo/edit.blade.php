@@ -15,6 +15,16 @@
                 @csrf
                 @method('put')
                 <div class="form-group mb-3">
+                    <label for="name" class="text-capitalize">nama<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control  @error('name') is-invalid @enderror" id="name" name="name" placeholder="Masukkan nama" value="{{ old('name', $photo->name) }}">
+                    @error('name')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>"{{ $message }}"</strong>
+                        </span>
+                    @enderror
+                </div>
+
+                <div class="form-group mb-3">
                     <label for="description" class="text-capitalize">keterangan<span class="text-danger">*</span></label>
                     <textarea class="form-control @error('description') is-invalid @enderror" id="description"
                         name="description"
@@ -29,9 +39,26 @@
                 <div class="form-group mb-3">
                     <label for="path" class="text-capitalize">Foto<span class="text-danger">*</span></label><br>
                     <span class="text-muted"><i>Format yang didukung: jpeg, jpg, png</i></span>
+                    <div class="container">
+                        <div class="row row-cols-sm-2 mb-3 justify-content-sm-start justify-content-between">
+                            @forelse ($photo->files as $file)
+                            <div class="wrapper px-0 mx-sm-3 mx-0 mb-3 data-photo-id-{{ $file->id }}">
+                                <div class="thumb-wrap mb-1">
+                                    <img src="{{ asset('photo/'.$file->folder.'/'.$file->name) }}" alt="{{ $file->name }}">
+                                </div>
+                                <div class="d-grid gap-2">
+                                    <button type="button" class="deletePhoto btn btn-outline-danger" data-id="{{ $file->id }}">Hapus</button>
+                                </div>
+                            </div>
+                            @empty
+                                <span>Tidak ada foto</span>
+                            @endforelse
+                        </div>
+                    </div>
                     <input type="file" name="path" id="path" value="{{ old('path') }}" />
                     <span>{{ $errors->first('path') }}</span>
                 </div>
+
                 <button type="submit" class="btn btn-primary">Simpan</button>
             </form>
         </div>
@@ -39,6 +66,29 @@
 @endsection
 
 @push('script')
+    <script>
+        $(".deletePhoto").click(function() {
+                var id = $(this).data("id");
+                var confirmation = confirm("Apakah anda yakin ingin menghapus foto ini ??");
+                if(confirmation){
+                    $.ajax({
+                        url: "/delete/photo/" + id,
+                        type: 'DELETE',
+                        data: {
+                            "id": id,
+                            "_token": '{{ csrf_token() }}',
+                        },
+                        success: function() {
+                            $(".data-photo-id-" + id).remove();
+                        },
+                        error: function(){
+                            alert('Gagal menghapus foto')
+                        }
+                    });
+                }
+
+            });
+    </script>
     <script src="{{ asset('vendors/ckeditor/ckeditor.js') }}"></script>
     <script>
         ClassicEditor
@@ -62,7 +112,8 @@
     <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
     <script>
         FilePond.registerPlugin(
-            FilePondPluginImagePreview, FilePondPluginFileValidateType
+            FilePondPluginImagePreview,
+            FilePondPluginFileValidateType
         );
         const inputElement = document.querySelector('input[id="path"]');
         const pond = FilePond.create(inputElement, {
@@ -78,10 +129,44 @@
         });
         FilePond.setOptions({
             server: {
-                url: '/uploadPhoto',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
+                process: (fieldName, file, metadata, load, error, progress, abort, transfer, options) => {
+                    const formData = new FormData();
+                    formData.append(fieldName, file, file.name);
+                    const request = new XMLHttpRequest();
+                    request.open('POST', '/upload/media');
+                    request.setRequestHeader("X-CSRF-TOKEN", '{{ csrf_token() }}'); 
+
+                    request.onload = function () {
+                        if (request.status == 200 && this.readyState === XMLHttpRequest.DONE) {
+                            // the load method accepts either a string (id) or an object
+                            load(request.responseText);
+                            $('form').append('<input type="hidden" name="medias[]" value='+request.responseText+'>')
+                        } else {
+                            // Can call the error method if something is wrong, should exit after
+                            error('oh no');
+                        }
+                    };
+                    request.send(formData);
+                    return {
+                        abort: () => {
+                            // This function is entered if the user has tapped the cancel button
+                            request.abort();
+
+                            // Let FilePond know the request has been cancelled
+                            abort();
+                        },
+                    };
+                },
+                revert: {
+                    url: '/delete/media',
+                    onload: function (response) {
+                        const name = JSON.parse(response);
+                        $('form').find('input[name="medias[]"][value="' + name + '"]').remove()
+                    },
+                }
             },
         });
     </script>

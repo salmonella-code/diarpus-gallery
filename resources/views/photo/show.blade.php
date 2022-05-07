@@ -11,9 +11,7 @@
     <a href="{{ route('photo.edit', ['gallery'=>$gallery, 'photo'=>$photo->id]) }}" class="btn btn-sm btn-warning me-3"><i class="fas fa-edit fa-fw align-middle"></i></a>
 
     <a href="#" onclick="return confirm('Apakah anda yakin ingin menghapus foto ini ??');">
-        <form
-            action="{{ route('photo.destroy', ['gallery' => $gallery, 'photo' => $photo->id]) }}"
-            method="post">
+        <form action="{{ route('photo.destroy', ['gallery' => $gallery, 'photo' => $photo->id]) }}" method="post">
             @csrf
             @method('delete')
             <button type="submit" class="btn btn-sm btn-danger">
@@ -22,26 +20,38 @@
         </form>
     </a>
 </div>
-    <div class="card border-secondary shadow">
-        <div class="product-wrap-lg">
-            <img src="{{ asset('photo/' . $photo->url_gallery) }}" class="card-img-top img-fluid" alt="foto"
-                id="photo">
-            <div class="card-img-overlay d-flex align-items-center justify-content-center">
-                <div class="d-flex">
-                    <a href="{{ asset('photo/' . $photo->url_gallery) }}" class="btn btn-outline-info me-1"
-                        target="_blank"><i class="fas fa-images fa-fw"></i></a>
+<div class="card border-secondary shadow">
+    <div class="card-body pb-0">
+
+        <div id="carouselExampleControls" class="carousel carousel-dark slide shadow-sm mb-3" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                @foreach ($photo->files as $key => $media )
+                <div class="carousel-item {{$key == 0 ? 'active' : '' }}">
+                    <div class="product-wrap-lg">
+                        <img src="{{ asset('photo/'.$media->folder.'/'.$media->name) }}" class="card-img-top img-fluid" alt="{{ $media->name }}" id="photo">
+                    </div>
                 </div>
+                @endforeach
+
             </div>
+            <button class="carousel-control-prev rounded-start" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next rounded-end" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
         </div>
-        <div class="card-body">
-            <div class="card-text">
-                {!! $photo->description !!}
-            </div>
-        </div>
-        <div class="card-footer bg-transparent py-1">
-            <span><strong>Author: {{ $photo->user->name }}</strong></span>
-            <br>
-            <small class="text-mutes">Updated at :{{ $photo->created_at->format('d M Y') }}</small>
+
+        <h5><strong>{{ $photo->name }}</strong></h5>
+        <div class="card-text">
+            {!! $photo->description !!}
         </div>
     </div>
+    <div class="card-footer bg-transparent py-1 d-flex flex-column">
+        <span><strong>Author: {{ $photo->user->name }}</strong></span>
+        <small class="text-mutes">Updated at :{{ $photo->created_at->format('d M Y') }}</small>
+    </div>
+</div>
 @endsection

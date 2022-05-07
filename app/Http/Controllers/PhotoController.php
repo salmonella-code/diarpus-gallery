@@ -6,7 +6,8 @@ use App\Models\Field;
 use App\Models\Gallery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use File;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class PhotoController extends Controller
 {
@@ -25,25 +26,43 @@ class PhotoController extends Controller
 
     public function store(Request $request, $gallery)
     {
-        $request->validate([
-            'name' => ['required', 'string'],
-            'description' => ['required'],
-        ]);
+        DB::beginTransaction();
+        try {
+            $request->validate([
+                'name' => ['required', 'string'],
+                'description' => ['required'],
+            ]);
+    
+            $media = Gallery::create([
+                'user_id' => auth()->user()->id,
+                'field_id' => $gallery,
+                'name' => $request->name,
+                'slug' => Str::slug($request->name),
+                'category' => 'photo',
+                'description' => $request->description,
+            ]);
 
-        $media = Gallery::create([
-            'user_id' => auth()->user()->id,
-            'field_id' => $gallery,
-            'name' => $request->name,
-            'slug' => Str::slug($request->name),
-            'category' => 'photo',
-            'description' => $request->description,
-        ]);
+            if(!File::isDirectory('photo/'.$media->slug)){
+                File::makeDirectory('photo/'.$media->slug, 0777, true, true);
+            }
+    
+            foreach ($request->medias as $file) {
+                $old = 'tmp/uploads/'.$file;
+                $new = 'photo/'.$media->slug.'/'.$file;
+                File::move($old, $new);
+                $media->files()->create([
+                    'name' => $file,
+                    'folder' => $media->slug
+                ]);
+            }
+            DB::commit();
 
-        foreach ($request->medias as $file) {
-            $media->addMedia('tmp/uploads/' . $file)->toMediaCollection('photo');
+            return redirect()->route('photo.index', $gallery)->withSuccess('Berhasil menambah arsip foto');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('photo.index', $gallery)->with('error',$e->getMessage());
         }
 
-        return redirect()->route('photo.index', $gallery)->withSuccess('Berhasil menambah foto');
     }
 
     public function show($gallery, $photo)
@@ -62,37 +81,83 @@ class PhotoController extends Controller
 
     public function update(Request $request,$gallery, $photo)
     {
-        $photo = Gallery::findOrFail($photo);
-        $request->validate([
-            'description' => ['required'],
-        ]);
+        DB::beginTransaction();
+        try {
+            $request->validate([
+                'name' => ['required', 'string'],
+                'description' => ['required'],
+            ]);
+            
+            $media = Gallery::findOrFail($photo);
 
-        $temporaryFile = TemporaryFile::where('folder', $request->path)->first();
-        if (is_null($temporaryFile)) {
-            $photo->update([
+            $media->update([
+                'name' => $request->name,
                 'description' => $request->description,
             ]);
-        }elseif (!is_null($temporaryFile)) {
-            File::delete('photo/'.$photo->url_gallery);
-            $old = 'photo/tmp/'.$temporaryFile->folder.'/'.$temporaryFile->filename;
-            $new = 'photo/'.$temporaryFile->filename;
-            File::move($old, $new);
-            $photo->update([
-                'description' => $request->description,
-                'url_gallery' => $temporaryFile->filename
-            ]);
-            rmdir('photo/tmp/' . $temporaryFile->folder);
-            $temporaryFile->delete();
+
+            if (count($request->medias) > 0) {
+                foreach ($request->medias as $file) {
+                    $old = 'tmp/uploads/'.$file;
+                    $new = 'photo/'.$media->slug.'/'.$file;
+                    File::move($old, $new);
+                    $media->files()->create([
+                        'name' => $file,
+                        'folder' => $media->slug
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            return redirect()->route('photo.index', $gallery)->withSuccess('Berhasil update arsip foto');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('photo.index', $gallery)->with('error', $e->getMessage());
         }
-
-        return redirect()->route('photo.index', $gallery)->withSuccess('Berhasil edit foto');
     }
 
     public function destroy($gallery, $photo)
     {
-        $photo = Gallery::findOrFail($photo);
-        File::delete('photo/'.$photo->url_gallery);
-        $photo->delete();
-        return redirect()->route('photo.index', $gallery)->withSuccess('Berhasil hapus foto');
+        try {
+            $photo = Gallery::findOrFail($photo);
+            File::deleteDirectory('photo/'.$photo->files[0]->folder);
+            File::delete($photo->name.'.zip');
+            $photo->delete();
+
+            return redirect()->route('photo.index', $gallery)->withSuccess('Berhasil hapus arsip foto');
+        } catch (\Exception $e) {
+            return redirect()->route('photo.index', $gallery)->with('error', $e->getMessage());
+        }
+    }
+
+    public function download($gallery, $photo)
+    {
+        try {
+            $photo = Gallery::findOrFail($photo);
+            $zip_file = $photo->name.'.zip';
+
+            $zip = new \ZipArchive();
+            $zip->open($zip_file, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
+
+            $path = public_path('photo/'.$photo->files[0]->folder);
+            $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path));
+
+            foreach ($files as $file)
+            {
+                // We're skipping all subfolders
+                if (!$file->isDir()) {
+                    $filePath     = $file->getRealPath();
+
+                    // extracting filename with substr/strlen
+                    $relativePath = substr($filePath, strlen($path) + 1);
+
+                    $zip->addFile($filePath, $relativePath);
+                }
+            }
+            $zip->close();
+            return response()->download($zip_file);
+        } catch (\Exception $e) {
+            return redirect()->route('photo.index', $gallery)->with('error', $e->getMessage());
+        }
     }
 }

@@ -114,7 +114,7 @@
                     };
                 },
                 revert: {
-                    url: '/destroy/media',
+                    url: '/delete/media',
                     onload: function (response) {
                         const name = JSON.parse(response);
                         $('form').find('input[name="medias[]"][value="' + name + '"]').remove()

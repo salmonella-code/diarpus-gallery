@@ -2,67 +2,55 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TemporaryFile;
+use App\Models\File as ModelsFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+
 
 class UploadController extends Controller
 {
     public function uploadMedia(Request $request)
     {
-        if ($request->hasFile('path')) {
-            $file = $request->file('path');
-            $fileName = uniqid() . time() . '.' . $file->getClientOriginalExtension();
-            $file->move('tmp/uploads/', $fileName);
-
-            return response()->json($fileName);
+        try {
+            if ($request->hasFile('path')) {
+                $file = $request->file('path');
+                $fileName = uniqid() . time() . '.' . $file->getClientOriginalExtension();
+                $file->move('tmp/uploads/', $fileName);
+    
+                return response()->json($fileName);
+            }
+            return '';
+        } catch (\Exception $e) {
+            return response()->json($e->getMessage());
         }
-
-        return '';
     }
 
     public function destroyMedia(Request $request)
     {
-        $payLoad = json_decode($request->getContent());
-        File::delete('tmp/uploads/'.$payLoad);
-        return response()->json($payLoad);
+        try {
+            $payLoad = json_decode($request->getContent());
+            File::delete('tmp/uploads/'.$payLoad);
+            return response()->json($payLoad);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 
-    public function avatar(Request $request)
+    public function deletePhoto($id)
     {
-        if ($request->hasFile('avatar')) {
-            $file = $request->file('avatar');
-            $fileName = time() . '.' . $file->getClientOriginalExtension();
-            $folder = uniqid().'-'.now()->timestamp;
-            $file->move('avatar/tmp/'.$folder, $fileName);
-
-            TemporaryFile::create([
-                'folder' => $folder,
-                'filename' => $fileName,
+        try {
+            $photo = ModelsFile::findOrFail($id);
+            File::delete('photo/'.$photo->folder.'/'.$photo->name);
+            $photo->delete();
+            return response()->json([
+                'success' => 'Berhasil hapus data!'
             ]);
-
-            return $folder;
-        }
-
-        return '';
-    }
-
-    public function video(Request $request)
-    {
-        if ($request->hasFile('path')) {
-            $file = $request->file('path');
-            $fileName = time() . '.' . $file->getClientOriginalExtension();
-            $folder = uniqid().'-'.now()->timestamp;
-            $file->move('video/tmp/'.$folder, $fileName);
-
-            TemporaryFile::create([
-                'folder' => $folder,
-                'filename' => $fileName,
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Gagal hapus data!'
             ]);
-
-            return $folder;
         }
-
-        return '';
     }
 }
