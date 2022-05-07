@@ -1,8 +1,14 @@
 @extends('layouts.app')
 
 @push('css')
+    {{-- datepicker --}}
+    <link rel="stylesheet" href="{{ asset('vendors/datepickers/bootstrap-datepicker.min.css') }}">
+    {{-- //datepicker --}}
+
+    {{-- filepond --}}
     <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
     <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet" />
+    {{-- //filepond --}}
 @endpush
 
 @section('page_title', $galleries->name)
@@ -27,15 +33,25 @@
                         name="description" placeholder="Masukkan keterangan">{!! old('description') !!}</textarea>
                     @error('description')
                         <div class="invalid-feedback">
-                            "{{ $message }}"
+                            <strong>"{{ $message }}"</strong>
                         </div>
+                    @enderror
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="date" class="text-capitalize">tanggal<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control  @error('date') is-invalid @enderror" id="date" name="date" placeholder="Masukkan tanggal" value="{{ old('date') }}">
+                    @error('date')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>"{{ $message }}"</strong>
+                        </span>
                     @enderror
                 </div>
 
                 <div class="form-group mb-3">
                     <label for="path" class="text-capitalize">Foto<span class="text-danger">*</span></label><br>
                     <span class="text-muted"><i>Format yang didukung: jpeg, jpg, png</i></span>
-                    <input type="file" name="path" id="path" value="{{ old('path') }}" multiple/>
+                    <input type="file" name="path" id="path" value="{{ old('path') }}" required multiple/>
                     <span>{{ $errors->first('path') }}</span>
                 </div>
                 <button type="submit" class="btn btn-primary">Simpan</button>
@@ -45,6 +61,7 @@
 @endsection
 
 @push('script')
+    {{-- ckeditor --}}
     <script src="{{ asset('vendors/ckeditor/ckeditor.js') }}"></script>
     <script>
         ClassicEditor
@@ -60,6 +77,18 @@
                 console.error(error);
             });
     </script>
+    {{-- //ckeditor --}}
+
+    {{-- datepicker --}}
+    <script src="{{ asset('vendors/datepickers/bootstrap-datepicker.min.js') }}"></script>
+    <script>
+        $('#date').datepicker({
+            format: "dd-mm-yyyy",
+        });
+    </script>
+    {{-- //datepicker --}}
+
+    {{-- filepond --}}
     <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
     <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
     <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
@@ -123,4 +152,5 @@
             },
         });
     </script>
+    {{-- //filepond --}}
 @endpush

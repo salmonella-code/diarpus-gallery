@@ -21,6 +21,7 @@ class CreateGalleriesTable extends Migration
             $table->string('slug');
             $table->enum('category', ['photo','video']);
             $table->text('description');
+            $table->date('activity');
             $table->timestamps();
 
             $table->foreign('field_id')->references('id')->on('fields')->cascadeOnDelete()->cascadeOnUpdate();

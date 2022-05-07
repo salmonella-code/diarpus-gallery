@@ -18,6 +18,11 @@ class Gallery extends Model
         'slug',
         'category', 
         'description', 
+        'activity'
+    ];
+
+    protected $dates = [
+        'activity'
     ];
 
     public function user()

@@ -59,7 +59,7 @@
                         <div class="card-footer bg-transparent py-1">
                             <span><strong>Author: {{ $item->user->name }}</strong></span>
                             <br>
-                            <small class="text-mutes">Updated at :{{ $item->created_at->format('d M Y') }}</small>
+                            <small class="text-mutes">Updated at :{{ $item->activity->format('d M Y') }}</small>
                         </div>
                     </div>
                 </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Field;
 use App\Models\Gallery;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
@@ -26,12 +27,14 @@ class PhotoController extends Controller
 
     public function store(Request $request, $gallery)
     {
+        $request->validate([
+            'name' => ['required', 'string'],
+            'description' => ['required'],
+            'date' => ['required', 'date']
+        ]);
+
         DB::beginTransaction();
         try {
-            $request->validate([
-                'name' => ['required', 'string'],
-                'description' => ['required'],
-            ]);
     
             $media = Gallery::create([
                 'user_id' => auth()->user()->id,
@@ -40,20 +43,23 @@ class PhotoController extends Controller
                 'slug' => Str::slug($request->name),
                 'category' => 'photo',
                 'description' => $request->description,
+                'activity' => Carbon::parse($request->date),
             ]);
 
-            if(!File::isDirectory('photo/'.$media->slug)){
-                File::makeDirectory('photo/'.$media->slug, 0777, true, true);
-            }
-    
-            foreach ($request->medias as $file) {
-                $old = 'tmp/uploads/'.$file;
-                $new = 'photo/'.$media->slug.'/'.$file;
-                File::move($old, $new);
-                $media->files()->create([
-                    'name' => $file,
-                    'folder' => $media->slug
-                ]);
+            if ($request->medias != null) {
+                if(!File::isDirectory('photo/'.$media->slug)){
+                    File::makeDirectory('photo/'.$media->slug, 0777, true, true);
+                }
+            
+                foreach ($request->medias as $file) {
+                    $old = 'tmp/uploads/'.$file;
+                    $new = 'photo/'.$media->slug.'/'.$file;
+                    File::move($old, $new);
+                    $media->files()->create([
+                        'name' => $file,
+                        'folder' => $media->slug
+                    ]);
+                }
             }
             DB::commit();
 
@@ -81,21 +87,23 @@ class PhotoController extends Controller
 
     public function update(Request $request,$gallery, $photo)
     {
+        $request->validate([
+            'name' => ['required', 'string'],
+            'description' => ['required'],
+            'date' => ['required', 'date']
+        ]);
+        
         DB::beginTransaction();
         try {
-            $request->validate([
-                'name' => ['required', 'string'],
-                'description' => ['required'],
-            ]);
-            
             $media = Gallery::findOrFail($photo);
 
             $media->update([
                 'name' => $request->name,
                 'description' => $request->description,
+                'activity' => Carbon::parse($request->date),
             ]);
 
-            if (count($request->medias) > 0) {
+            if ($request->medias != null) {
                 foreach ($request->medias as $file) {
                     $old = 'tmp/uploads/'.$file;
                     $new = 'photo/'.$media->slug.'/'.$file;

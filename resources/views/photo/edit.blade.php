@@ -1,8 +1,14 @@
 @extends('layouts.app')
 
 @push('css')
+    {{-- datepicker --}}
+    <link rel="stylesheet" href="{{ asset('vendors/datepickers/bootstrap-datepicker.min.css') }}">
+    {{-- //datepicker --}}
+
+    {{-- filepond --}}
     <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
     <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet" />
+    {{-- //filepond --}}
 @endpush
 
 @section('page_title', $photo->field->name)
@@ -37,6 +43,16 @@
                 </div>
 
                 <div class="form-group mb-3">
+                    <label for="date" class="text-capitalize">tanggal<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control  @error('date') is-invalid @enderror" id="date" name="date" placeholder="Masukkan tanggal" value="{{ old('date', $photo->activity->format('d-m-Y')) }}">
+                    @error('date')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>"{{ $message }}"</strong>
+                        </span>
+                    @enderror
+                </div>
+
+                <div class="form-group mb-3">
                     <label for="path" class="text-capitalize">Foto<span class="text-danger">*</span></label><br>
                     <span class="text-muted"><i>Format yang didukung: jpeg, jpg, png</i></span>
                     <div class="container">
@@ -66,6 +82,7 @@
 @endsection
 
 @push('script')
+    {{-- delete photo --}}
     <script>
         $(".deletePhoto").click(function() {
                 var id = $(this).data("id");
@@ -89,6 +106,9 @@
 
             });
     </script>
+    {{-- //delete photo --}}
+
+    {{-- ckeditor --}}
     <script src="{{ asset('vendors/ckeditor/ckeditor.js') }}"></script>
     <script>
         ClassicEditor
@@ -107,6 +127,18 @@
                 console.error(error);
             });
     </script>
+    {{-- //ckeditor --}}
+
+    {{-- datepicker --}}
+    <script src="{{ asset('vendors/datepickers/bootstrap-datepicker.min.js') }}"></script>
+    <script>
+        $('#date').datepicker({
+            format: "dd-mm-yyyy",
+        });
+    </script>
+    {{-- //datepicker --}}
+
+    {{-- filepond --}}
     <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
     <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
     <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
@@ -170,4 +202,5 @@
             },
         });
     </script>
+    {{-- //filepond --}}
 @endpush

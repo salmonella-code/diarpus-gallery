@@ -51,7 +51,7 @@
     </div>
     <div class="card-footer bg-transparent py-1 d-flex flex-column">
         <span><strong>Author: {{ $photo->user->name }}</strong></span>
-        <small class="text-mutes">Updated at :{{ $photo->created_at->format('d M Y') }}</small>
+        <small class="text-mutes">Updated at :{{ $photo->activity->format('d M Y') }}</small>
     </div>
 </div>
 @endsection
