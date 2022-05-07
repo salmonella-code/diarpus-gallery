@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TemporaryFile;
-use Illuminate\Http\Request;
+use App\Http\Requests\ProfileRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
-use File;
+use Illuminate\Support\Facades\File;
 
 class ProfileController extends Controller
 {
@@ -21,17 +19,9 @@ class ProfileController extends Controller
         return view('profile.edit', ['profile' => auth()->user()]);
     }
 
-    public function update(Request $request)
+    public function update(ProfileRequest $request)
     {
         $profile = auth()->user();
-        $request->validate([
-            'nip' => ['nullable', 'numeric', Rule::unique('users', 'nip')->ignore($profile->id)],
-            'group' => ['nullable', 'string'],
-            'position' => ['required', 'string'],
-            'name' => ['required', 'string'],
-            'contact' => ['required', 'numeric', Rule::unique('users', 'contact')->ignore($profile->id)],
-            'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($profile->id)],
-        ]);
 
         $profile->nip = $request->nip;
         $profile->group = $request->group;
@@ -47,18 +37,15 @@ class ProfileController extends Controller
             $profile->password = Hash::make($request->password);
         }
 
-        $temporaryFile = TemporaryFile::where('folder', $request->avatar)->first();
-        if ($temporaryFile) {
+        if($request->avatar != null){
             if ($profile->avatar != 'avatar.jpg') {
                 File::delete('avatar/' . $profile->avatar);
             }
-            $old = 'avatar/tmp/' . $temporaryFile->folder . '/' . $temporaryFile->filename;
-            $new = 'avatar/' . $temporaryFile->filename;
+            $old = 'tmp/uploads/'.$request->avatar;
+            $new = 'avatar/'.$request->avatar;
             File::move($old, $new);
-            $profile->avatar = $temporaryFile->filename;
-            rmdir('avatar/tmp/' . $temporaryFile->folder);
-            $temporaryFile->delete();
-        }
+    		$profile->avatar = $request->avatar;
+    	}
 
         $profile->save();
 

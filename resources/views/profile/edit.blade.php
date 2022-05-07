@@ -106,9 +106,11 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group d-flex flex-column">
                         <label for="avatar" class="text-capitalize">photo profile</label>
-                        <input type="file" id="avatar" name="avatar">
+                        <span class="text-muted"><i>Format yang didukung: jpeg, jpg, png</i></span>
+                        <span class="text-muted"><i>Ukuran Maksimal: 3Mb</i></span>
+                        <input type="file" id="path" name="path">
                     </div>
 
                     <button type="submit" class="btn btn-primary rounded">Simpan</button>
@@ -121,18 +123,22 @@
 @push('script')
     <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
     <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js"></script>
     <script src="https://unpkg.com/filepond/dist/filepond.js"></script>
     <script>
         FilePond.registerPlugin(
             FilePondPluginImagePreview,
             FilePondPluginFileValidateType,
+            FilePondPluginFileValidateSize
         );
-        FilePond.create(document.querySelector('input[id="avatar"]'), {
+        const inputElement = document.querySelector('input[id="path"]');
+        const pond = FilePond.create(inputElement, {
             allowImagePreview: true,
             allowImageFilter: false,
             allowImageExifOrientation: false,
             allowImageCrop: false,
-            acceptedFileTypes: ['image/png', 'image/jpg', 'image/jpeg'],
+            acceptedFileTypes: ['image/jpeg', 'image/png', 'image/jpg'],
+            maxFileSize: '3MB',
             fileValidateTypeDetectType: (source, type) => new Promise((resolve, reject) => {
                 // Do custom type detection here and return with promise
                 resolve(type);
@@ -140,10 +146,44 @@
         });
         FilePond.setOptions({
             server: {
-                url: '/upload/avatar',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
+                process: (fieldName, file, metadata, load, error, progress, abort, transfer, options) => {
+                    const formData = new FormData();
+                    formData.append(fieldName, file, file.name);
+                    const request = new XMLHttpRequest();
+                    request.open('POST', '/upload/media');
+                    request.setRequestHeader("X-CSRF-TOKEN", '{{ csrf_token() }}'); 
+
+                    request.onload = function () {
+                        if (request.status == 200 && this.readyState === XMLHttpRequest.DONE) {
+                            // the load method accepts either a string (id) or an object
+                            load(request.responseText);
+                            $('form').append('<input type="hidden" name="avatar" value='+request.responseText+'>')
+                        } else {
+                            // Can call the error method if something is wrong, should exit after
+                            error('oh no');
+                        }
+                    };
+                    request.send(formData);
+                    return {
+                        abort: () => {
+                            // This function is entered if the user has tapped the cancel button
+                            request.abort();
+
+                            // Let FilePond know the request has been cancelled
+                            abort();
+                        },
+                    };
+                },
+                revert: {
+                    url: '/delete/media',
+                    onload: function (response) {
+                        const name = JSON.parse(response);
+                        $('form').find('input[name="avatar"][value="' + name + '"]').remove()
+                    },
+                }
             },
         });
     </script>

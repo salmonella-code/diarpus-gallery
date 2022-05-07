@@ -2,18 +2,18 @@
 
 @section('page_title', 'Profile')
 @section('content')
+    @if (Session::has('success'))
+        <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+            {{ Session::get('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @elseif (Session::has('error'))
+        <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+            {{ Session::get('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
     <div class="card shadow">
-        @if (Session::has('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ Session::get('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @elseif (Session::has('error'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{ Session::get('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
         <div class="card-body">
             <div class="container">
                 <div class="row row-cols-1 row-cols-md-2 justify-content-center">
