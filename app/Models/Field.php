@@ -23,4 +23,14 @@ class Field extends Model
     {
         return $this->hasMany(Gallery::class, 'field_id');
     }
+
+    public function photos()
+    {
+        return $this->galleries()->where('category', 'photo');
+    }
+
+    public function videos()
+    {
+        return $this->galleries()->where('category', 'video');
+    }
 }

@@ -69,6 +69,11 @@ Route::middleware('auth')->group(function(){
     Route::get('gallery/{gallery}/video', [VideoController::class, 'index'])->name('video.index');
     Route::get('gallery/{gallery}/video/create', [VideoController::class, 'create'])->name('video.create');
     Route::post('gallery/{gallery}/video', [VideoController::class, 'store'])->name('video.store');
+    Route::get('gallery/{gallery}/video/{video}', [VideoController::class, 'show'])->name('video.show');
+    Route::get('gallery/{gallery}/video/{video}/edit', [VideoController::class, 'edit'])->name('video.edit');
+    Route::put('gallery/{gallery}/video/{video}', [VideoController::class, 'update'])->name('video.update');
+    Route::delete('gallery/{gallery}/video/{video}', [VideoController::class, 'destroy'])->name('video.destroy');
+    Route::get('gallery/{gallery}/video/{video}/download', [VideoController::class, 'download'])->name('video.download');
     // end video
     
     // uploader

@@ -11,36 +11,40 @@
     {{-- //filepond --}}
 @endpush
 
-@section('page_title', $galleries->name)
+@section('page_title', $video->field->name)
 
 @section('content')
     <div class="card shadow">
         <div class="card-body">
-            <form action="{{ route('video.store', $galleries->id) }}" method="post" enctype="multipart/form-data">
+            <form action="{{ route('video.update', ['gallery' => $gallery, 'video' => $video->id]) }}" method="post"
+                enctype="multipart/form-data">
                 @csrf
+                @method('put')
                 <div class="form-group mb-3">
                     <label for="name" class="text-capitalize">nama<span class="text-danger">*</span></label>
-                    <input type="text" class="form-control  @error('name') is-invalid @enderror" id="name" name="name" placeholder="Masukkan nama" value="{{ old('name') }}">
+                    <input type="text" class="form-control  @error('name') is-invalid @enderror" id="name" name="name" placeholder="Masukkan nama" value="{{ old('name', $video->name) }}">
                     @error('name')
                         <span class="invalid-feedback" role="alert">
                             <strong>"{{ $message }}"</strong>
                         </span>
                     @enderror
                 </div>
+
                 <div class="form-group mb-3">
                     <label for="description" class="text-capitalize">keterangan<span class="text-danger">*</span></label>
                     <textarea class="form-control @error('description') is-invalid @enderror" id="description"
-                        name="description" placeholder="Masukkan keterangan">{!! old('description') !!}</textarea>
+                        name="description"
+                        placeholder="Masukkan keterangan">{{ old('description', $video->description) }}</textarea>
                     @error('description')
                         <div class="invalid-feedback">
-                            <strong>"{{ $message }}"</strong>
+                            "{{ $message }}"
                         </div>
                     @enderror
                 </div>
 
                 <div class="form-group mb-3">
                     <label for="date" class="text-capitalize">tanggal<span class="text-danger">*</span></label>
-                    <input type="text" class="form-control  @error('date') is-invalid @enderror" id="date" name="date" placeholder="Masukkan tanggal" value="{{ old('date') }}">
+                    <input type="text" class="form-control  @error('date') is-invalid @enderror" id="date" name="date" placeholder="Masukkan tanggal" value="{{ old('date', $video->activity->format('d-m-Y')) }}">
                     @error('date')
                         <span class="invalid-feedback" role="alert">
                             <strong>"{{ $message }}"</strong>
@@ -49,11 +53,30 @@
                 </div>
 
                 <div class="form-group mb-3">
-                    <label for="path" class="text-capitalize">Video<span class="text-danger">*</span></label><br>
-                    <span class="text-muted"><i>Format yang didukung: MP4, AVI</i></span>
-                    <input type="file" name="path" id="path" value="{{ old('path') }}" required multiple/>
+                    <label for="path" class="text-capitalize">Foto<span class="text-danger">*</span></label><br>
+                    <span class="text-muted"><i>Format yang didukung: jpeg, jpg, png</i></span>
+                    <div class="container">
+                        <div class="row row-cols-sm-2 mb-3 justify-content-sm-start justify-content-between">
+                            @forelse ($video->files as $file)
+                            <div class="wrapper px-0 mx-sm-3 mx-0 mb-3 data-video-id-{{ $file->id }}">
+                                <div class="thumb-wrap mb-1">
+                                    <video controls="controls" preload="metadata">
+                                        <source src="{{ asset('video/'.$file->folder.'/'.$file->name) }}" type="video/mp4">
+                                    </video>
+                                </div>
+                                <div class="d-grid gap-2">
+                                    <button type="button" class="deletevideo btn btn-outline-danger" data-id="{{ $file->id }}">Hapus</button>
+                                </div>
+                            </div>
+                            @empty
+                                <span>Tidak ada foto</span>
+                            @endforelse
+                        </div>
+                    </div>
+                    <input type="file" name="path" id="path" value="{{ old('path') }}" />
                     <span>{{ $errors->first('path') }}</span>
                 </div>
+
                 <button type="submit" class="btn btn-primary">Simpan</button>
             </form>
         </div>
@@ -61,6 +84,32 @@
 @endsection
 
 @push('script')
+    {{-- delete video --}}
+    <script>
+        $(".deletevideo").click(function() {
+                var id = $(this).data("id");
+                var confirmation = confirm("Apakah anda yakin ingin menghapus foto ini ??");
+                if(confirmation){
+                    $.ajax({
+                        url: "/delete/video/" + id,
+                        type: 'DELETE',
+                        data: {
+                            "id": id,
+                            "_token": '{{ csrf_token() }}',
+                        },
+                        success: function() {
+                            $(".data-video-id-" + id).remove();
+                        },
+                        error: function(){
+                            alert('Gagal menghapus foto')
+                        }
+                    });
+                }
+
+            });
+    </script>
+    {{-- //delete video --}}
+
     {{-- ckeditor --}}
     <script src="{{ asset('vendors/ckeditor/ckeditor.js') }}"></script>
     <script>
@@ -73,6 +122,9 @@
             })
             .catch(error => {
                 console.error('Oops, something went wrong!');
+                console.error(
+                    'Please, report the following error on https://github.com/ckeditor/ckeditor5/issues with the build id and the error stack trace:'
+                );
                 console.warn('Build id: bznspbhgo6qx-32n13df5w9i6');
                 console.error(error);
             });

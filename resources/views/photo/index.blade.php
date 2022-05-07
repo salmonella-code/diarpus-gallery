@@ -17,7 +17,7 @@
         </div>
     @endif
 
-    @forelse ($galleries->galleries->chunk(3) as $photo)
+    @forelse ($galleries->photos->chunk(3) as $photo)
         <div class="row">
             @foreach ($photo as $item)
                 <div class="col-12 col-sm-4">
