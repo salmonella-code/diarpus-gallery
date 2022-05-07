@@ -8,7 +8,7 @@
         <form action="{{ route('user.store') }}" method="post">
             @csrf
             <div class="form-group mb-3">
-                <label for="field" class="text-capitalize">Bidang</label>
+                <label for="field" class="text-capitalize">Bidang<span class="text-danger">*</span></label>
                 <select class="form-select" name="field" id="field" @error('field') is-invalid @enderror>
                     <option selected disabled>-- Pilih Bidang ---</option>
                     @foreach ($fields as $field)

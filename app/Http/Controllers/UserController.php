@@ -49,12 +49,14 @@ class UserController extends Controller
     public function edit($id)
     {
         $user = User::findOrFail($id);
-        return view('user.edit', compact('user'));
+        $fields = Field::all();
+        return view('user.edit', compact('user', 'fields'));
     }
 
     public function update(UserRequest $request, User $admin)
     {
         $admin->update([
+            'field_id' => $request->field,
             'nip' => $request->nip,
             'group' => $request->group,
             'position' => $request->position,

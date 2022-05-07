@@ -8,6 +8,20 @@
             <form action="{{ route('admin.store') }}" method="post">
                 @csrf
                 <div class="form-group mb-3">
+                    <label for="field" class="text-capitalize">Bidang</label>
+                    <select class="form-select" name="field" id="field" @error('field') is-invalid @enderror>
+                        <option selected disabled>-- Pilih Bidang ---</option>
+                        @foreach ($fields as $field)
+                        <option value="{{ $field->id }}" {{ old('field') == $field->id ? 'selected' : '' }}>{{ $field->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('field')
+                    <div class="invalid-feedback">
+                        "{{ $message }}"
+                    </div>
+                    @enderror
+                </div>
+                <div class="form-group mb-3">
                     <label for="nip" class="text-capitalize">nip</label>
                     <input type="text" class="form-control  @error('nip') is-invalid @enderror" id="nip" name="nip"
                         placeholder="Masukkan nip" value="{{ old('nip') }}">

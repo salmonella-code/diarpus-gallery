@@ -25,16 +25,23 @@ class UserRequest extends FormRequest
     public function rules()
     {
         if (request()->isMethod('post')) {
+            $field = ['required', 'string'];
             $nip = 'unique:users,nip';
             $contact = 'unique:users,contact';
             $email = 'unique:users,email';
         }elseif (request()->isMethod('put')) {
+            $field = ['required', 'string'];
             $nip = Rule::unique('users', 'nip')->ignore($this->admin->id);
             $contact = Rule::unique('users', 'contact')->ignore($this->admin->id);
             $email = Rule::unique('users', 'email')->ignore($this->admin->id);
         }
 
+        if(request()->routeIs('admin.store') || request()->routeIs('admin.update')){
+            $field = ['nullable'];
+        }
+
         return [
+            'field' => $field,
             'nip' => ['nullable', 'numeric', $nip],
             'group' => ['nullable', 'string'],
             'position'=> ['required', 'string'],

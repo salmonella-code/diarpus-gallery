@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
+use App\Models\Field;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use File;
@@ -17,13 +18,14 @@ class AdminController extends Controller
 
     public function create()
     {
-        return view('admin.create');
+        $fields = Field::all();
+        return view('admin.create', compact('fields'));
     }
 
     public function store(UserRequest $request)
     {
         User::create([
-            'field_id' => null,
+            'field_id' => $request->field,
             'nip' => $request->nip,
             'group' => $request->group,
             'position' => $request->position,
@@ -41,18 +43,21 @@ class AdminController extends Controller
     public function show($id)
     {
         $admin = User::findOrFail($id);
-        return view('admin.show', compact('admin'));
+        $fields = Field::all();
+        return view('admin.show', compact('admin', 'fields'));
     }
 
     public function edit($id)
     {
         $admin = User::findOrFail($id);
-        return view('admin.edit', compact('admin'));
+        $fields = Field::all();
+        return view('admin.edit', compact('admin', 'fields'));
     }
 
     public function update(UserRequest $request, User $admin)
     {
         $admin->update([
+            'field_id' => $request->field,
             'nip' => $request->nip,
             'group' => $request->group,
             'position' => $request->position,
