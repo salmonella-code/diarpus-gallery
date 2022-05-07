@@ -102,11 +102,11 @@
                                     </a>
                                     <ul class="submenu ">
                                         <li
-                                            class="submenu-item {{ request()->is('gallery/' . $field->id . '*') ? 'active' : '' }}">
+                                            class="submenu-item {{ request()->is('gallery/' . $field->id . '/photo*') ? 'active' : '' }}">
                                             <a href="{{ route('photo.index', $field->id) }}">Photo</a>
                                         </li>
-                                        <li class="submenu-item ">
-                                            <a href="{{ route('user.index') }}">User</a>
+                                        <li class="submenu-item {{ request()->is('gallery/' . $field->id . '/video*') ? 'active' : '' }}">
+                                            <a href="{{ route('video.index', $field->id) }}">Video</a>
                                         </li>
                                     </ul>
                                 </li>
