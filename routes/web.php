@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\ChangePasswordController;
 use App\Http\Controllers\FieldController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\ProfileController;
@@ -23,6 +24,11 @@ Route::middleware('guest')->group(function(){
 Route::middleware('auth')->group(function(){
     Route::post('logout', [LoginController::class, 'logout'])->name('logout');
     Route::view('/', 'index');
+
+    // change password
+    Route::get('/change-password', [ChangePasswordController::class, 'index']);
+    Route::put('/change-password', [ChangePasswordController::class, 'update']);
+    // end change password
     
     Route::middleware('admin')->group(function(){
         Route::get('field', [FieldController::class, 'index'])->name('field.index');

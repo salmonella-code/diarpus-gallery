@@ -154,7 +154,7 @@
                                             <h6 class="dropdown-header">Hello, {{ auth()->user()->name }}!</h6>
                                         </li>
                                         <a class="dropdown-item" href="{{ route('profile.index') }}">Profile</a>
-                                        <a class="dropdown-item" href="#">Change Password</a>
+                                        <a class="dropdown-item" href="{{ url('/change-password') }}">Change Password</a>
                                         <button type="button" class="dropdown-item" data-bs-toggle="modal"
                                             data-bs-target="#logout">
                                             Logout
