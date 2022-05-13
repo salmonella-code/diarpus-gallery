@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VideoController;
+use App\Http\Controllers\VillageController;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('go', function () {
@@ -52,6 +53,16 @@ Route::middleware('auth')->group(function(){
         Route::get('user/{admin}/edit', [UserController::class, 'edit'])->name('user.edit');
         Route::put('user/{admin}', [UserController::class, 'update'])->name('user.update');
         Route::delete('user/{admin}', [UserController::class, 'destroy'])->name('user.destroy');
+
+        // village
+        Route::get('/village', [VillageController::class, 'index'])->name('village.index');
+        Route::get('/village/create', [VillageController::class, 'create']);
+        Route::post('/village', [VillageController::class, 'store']);
+        Route::get('/village/{id}/show', [VillageController::class, 'show']);
+        Route::get('/village/{id}', [VillageController::class, 'edit']);
+        Route::put('/village/{id}', [VillageController::class, 'update']);
+        Route::delete('/village/{id}', [VillageController::class, 'destroy']);
+        // end village
     });
     
     // photo

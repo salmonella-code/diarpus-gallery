@@ -25,8 +25,7 @@
                 <div class="sidebar-header">
                     <div class="d-flex justify-content-between">
                         <div class="logo">
-                            <a href="index.html"><img style="height: 100px" src="{{ asset('images/logo-kab.png') }}"
-                                    alt="Logo"></a>
+                            <a href="index.html"><img style="height: 100px" src="{{ asset('images/logo-kab.png') }}" alt="Logo"></a>
                         </div>
                         <div class="toggler">
                             <a href="#" class="sidebar-hide d-xl-none d-block"><i class="fas fa-times fa-fw"></i></a>
@@ -45,72 +44,72 @@
                         </li>
 
                         @if (auth()->user()->role == 'admin')
-                            <li class="sidebar-item {{ request()->is('field*') ? 'active' : '' }} ">
-                                <a href="{{ route('field.index') }}" class='sidebar-link'>
-                                    <i class="fas fa-fw fa-user-check"></i>
-                                    <span>Bidang</span>
-                                </a>
-                            </li>
+                        <li class="sidebar-item {{ request()->is('village*') ? 'active' : '' }} ">
+                            <a href="{{ url('/village') }}" class='sidebar-link'>
+                                <i class="fas fa-fw fa-map"></i>
+                                <span>Desa</span>
+                            </a>
+                        </li>
 
-                            <li
-                                class="sidebar-item {{ request()->is('admin*') ? 'active' : (request()->is('user*') ? 'active' : '') }} has-sub">
-                                <a href="#" class='sidebar-link'>
-                                    <i class="fas fa-fw fa-users" aria-hidden="true"></i>
-                                    <span>User</span>
-                                </a>
-                                <ul class="submenu ">
-                                    <li class="submenu-item {{ request()->is('admin*') ? 'active' : '' }}">
-                                        <a href="{{ route('admin.index') }}">Admin</a>
-                                    </li>
-                                    <li class="submenu-item ">
-                                        <a href="{{ route('user.index') }}">User</a>
-                                    </li>
-                                </ul>
-                            </li>
-                        @endif
+                        <li class="sidebar-item {{ request()->is('field*') ? 'active' : '' }} ">
+                            <a href="{{ route('field.index') }}" class='sidebar-link'>
+                                <i class="fas fa-fw fa-user-check"></i>
+                                <span>Bidang</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item {{ request()->is('admin*') ? 'active' : (request()->is('user*') ? 'active' : '') }} has-sub">
+                            <a href="#" class='sidebar-link'>
+                                <i class="fas fa-fw fa-users" aria-hidden="true"></i>
+                                <span>User</span>
+                            </a>
+                            <ul class="submenu ">
+                                <li class="submenu-item {{ request()->is('admin*') ? 'active' : '' }}">
+                                    <a href="{{ route('admin.index') }}">Admin</a>
+                                </li>
+                                <li class="submenu-item ">
+                                    <a href="{{ route('user.index') }}">User</a>
+                                </li>
+                            </ul>
+                        </li>
 
                         <li class="sidebar-title">Bidang-bidang</li>
 
-                        @if (auth()->user()->role == 'admin')
-                            @foreach (App\Models\Field::all() as $field)
-                                <li
-                                    class="sidebar-item {{ request()->is('gallery/' . $field->id . '*') ? 'active' : '' }} has-sub">
-                                    <a href="#" class='sidebar-link'>
-                                        <i class="fas fa-fw fa-users" aria-hidden="true"></i>
-                                        <span>{{ $field->name }}</span>
-                                    </a>
-                                    <ul class="submenu ">
-                                        <li
-                                            class="submenu-item {{ request()->is('gallery/' . $field->id . '/photo*') ? 'active' : '' }}">
-                                            <a href="{{ route('photo.index', $field->id) }}">Photo</a>
-                                        </li>
-                                        <li class="submenu-item {{ request()->is('gallery/' . $field->id . '/video*') ? 'active' : '' }}">
-                                            <a href="{{ route('video.index', $field->id) }}">Video</a>
-                                        </li>
-                                    </ul>
+                        @foreach (App\Models\Field::all() as $field)
+                        <li class="sidebar-item {{ request()->is('gallery/' . $field->id . '*') ? 'active' : '' }} has-sub">
+                            <a href="#" class='sidebar-link'>
+                                <i class="fas fa-fw fa-users" aria-hidden="true"></i>
+                                <span>{{ $field->name }}</span>
+                            </a>
+                            <ul class="submenu ">
+                                <li class="submenu-item {{ request()->is('gallery/' . $field->id . '/photo*') ? 'active' : '' }}">
+                                    <a href="{{ route('photo.index', $field->id) }}">Photo</a>
                                 </li>
-                            @endforeach
+                                <li class="submenu-item {{ request()->is('gallery/' . $field->id . '/video*') ? 'active' : '' }}">
+                                    <a href="{{ route('video.index', $field->id) }}">Video</a>
+                                </li>
+                            </ul>
+                        </li>
+                        @endforeach
                         @endif
 
                         @if (auth()->user()->role == 'user')
-                            @foreach (App\Models\Field::where('id', auth()->user()->field_id)->get() as $field)
-                                <li
-                                    class="sidebar-item {{ request()->is('gallery/' . $field->id . '*') ? 'active' : '' }} has-sub">
-                                    <a href="#" class='sidebar-link'>
-                                        <i class="fas fa-fw fa-users" aria-hidden="true"></i>
-                                        <span>{{ $field->name }}</span>
-                                    </a>
-                                    <ul class="submenu ">
-                                        <li
-                                            class="submenu-item {{ request()->is('gallery/' . $field->id . '/photo*') ? 'active' : '' }}">
-                                            <a href="{{ route('photo.index', $field->id) }}">Photo</a>
-                                        </li>
-                                        <li class="submenu-item {{ request()->is('gallery/' . $field->id . '/video*') ? 'active' : '' }}">
-                                            <a href="{{ route('video.index', $field->id) }}">Video</a>
-                                        </li>
-                                    </ul>
+                        @foreach (App\Models\Field::where('id', auth()->user()->field_id)->get() as $field)
+                        <li class="sidebar-item {{ request()->is('gallery/' . $field->id . '*') ? 'active' : '' }} has-sub">
+                            <a href="#" class='sidebar-link'>
+                                <i class="fas fa-fw fa-users" aria-hidden="true"></i>
+                                <span>{{ $field->name }}</span>
+                            </a>
+                            <ul class="submenu ">
+                                <li class="submenu-item {{ request()->is('gallery/' . $field->id . '/photo*') ? 'active' : '' }}">
+                                    <a href="{{ route('photo.index', $field->id) }}">Photo</a>
                                 </li>
-                            @endforeach
+                                <li class="submenu-item {{ request()->is('gallery/' . $field->id . '/video*') ? 'active' : '' }}">
+                                    <a href="{{ route('video.index', $field->id) }}">Video</a>
+                                </li>
+                            </ul>
+                        </li>
+                        @endforeach
                         @endif
                     </ul>
                 </div>
@@ -125,9 +124,7 @@
                             <i class="fas fa-bars fa-fw"></i>
                         </a>
 
-                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                            aria-expanded="false" aria-label="Toggle navigation">
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                             <span class="navbar-toggler-icon"></span>
                         </button>
                         <div class="collapse navbar-collapse bu" id="navbarSupportedContent">
@@ -141,22 +138,18 @@
                                             </div>
                                             <div class="user-img d-flex align-items-center">
                                                 <div class="avatar avatar-md">
-                                                    <img
-                                                        src="{{ asset('avatar/' . auth()->user()->avatar) }}">
+                                                    <img src="{{ asset('avatar/' . auth()->user()->avatar) }}">
                                                 </div>
                                             </div>
                                         </div>
                                     </a>
-                                    <div class="dropdown-menu dropdown-menu-end"
-                                        style="margin: 5px 0px; position: absolute; inset: 0px auto auto 0px; transform: translate(-67px, 38px);"
-                                        data-popper-placement="bottom-end">
+                                    <div class="dropdown-menu dropdown-menu-end" style="margin: 5px 0px; position: absolute; inset: 0px auto auto 0px; transform: translate(-67px, 38px);" data-popper-placement="bottom-end">
                                         <li>
                                             <h6 class="dropdown-header">Hello, {{ auth()->user()->name }}!</h6>
                                         </li>
                                         <a class="dropdown-item" href="{{ route('profile.index') }}">Profile</a>
                                         <a class="dropdown-item" href="{{ url('/change-password') }}">Change Password</a>
-                                        <button type="button" class="dropdown-item" data-bs-toggle="modal"
-                                            data-bs-target="#logout">
+                                        <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#logout">
                                             Logout
                                         </button>
                                     </div>
@@ -177,9 +170,7 @@
             <footer class="mt-auto">
                 <div class="footer clearfix mb-0 text-muted">
                     <div class="float-start">
-                        <script>
-                            document.write(new Date().getFullYear())
-                        </script> &copy; Powered By Diarpus</p>
+                        <p> {{ now()->year }} &copy; Powered By Diarpus</p>
                     </div>
                 </div>
             </footer>
@@ -188,27 +179,26 @@
 
     {{-- logout --}}
     @auth()
-        <div class="modal fade" id="logout" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-            aria-labelledby="logoutLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="logoutLabel">Logout</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Apakah anda yakin untuk keluar {{ auth()->user()->name }} ???</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <form action="{{ route('logout') }}" method="post">
-                            @csrf
-                            <button type="submit" class="btn btn-primary">Logout</button>
-                        </form>
-                    </div>
+    <div class="modal fade" id="logout" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="logoutLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="logoutLabel">Logout</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Apakah anda yakin untuk keluar {{ auth()->user()->name }} ???</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <form action="{{ route('logout') }}" method="post">
+                        @csrf
+                        <button type="submit" class="btn btn-primary">Logout</button>
+                    </form>
                 </div>
             </div>
         </div>
+    </div>
     @endauth
     {{-- //logout --}}
 
