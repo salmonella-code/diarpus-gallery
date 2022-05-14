@@ -16,7 +16,7 @@
 @section('content')
     <div class="card shadow">
         <div class="card-body">
-            <form action="{{ route('photo.store', $galleries->id) }}" method="post" enctype="multipart/form-data">
+            <form action="{{ route('photo.store', $galleries->slug) }}" method="post" enctype="multipart/form-data">
                 @csrf
                 <div class="form-group mb-3">
                     <label for="name" class="text-capitalize">nama<span class="text-danger">*</span></label>

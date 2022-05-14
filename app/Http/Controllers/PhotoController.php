@@ -5,23 +5,28 @@ namespace App\Http\Controllers;
 use App\Models\Field;
 use App\Models\Gallery;
 use Carbon\Carbon;
+use Cviebrock\EloquentSluggable\Services\SlugService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 
 class PhotoController extends Controller
 {
+    function finder($slug)
+    {
+        $result =  Field::where('slug',$slug)->firstOrFail();
+        return $result;
+    }
+
     public function index($gallery)
     {
-        $galleries = Field::findOrFail($gallery);
-
+        $galleries = $this->finder($gallery);
         return view('photo.index', compact('galleries'));
     }
 
     public function create($gallery)
     {
-        $galleries = Field::findOrFail($gallery);
+        $galleries = $this->finder($gallery);
         return view('photo.create', compact('galleries'));
     }
 
@@ -34,13 +39,13 @@ class PhotoController extends Controller
         ]);
 
         DB::beginTransaction();
+
         try {
-    
             $media = Gallery::create([
                 'user_id' => auth()->user()->id,
-                'field_id' => $gallery,
+                'field_id' => $this->finder($gallery)->id,
                 'name' => $request->name,
-                'slug' => Str::slug($request->name),
+                'slug' => SlugService::createSlug(Gallery::class, 'slug', $request->name),
                 'category' => 'photo',
                 'description' => $request->description,
                 'activity' => Carbon::parse($request->date),
@@ -61,6 +66,7 @@ class PhotoController extends Controller
                     ]);
                 }
             }
+
             DB::commit();
 
             return redirect()->route('photo.index', $gallery)->withSuccess('Berhasil menambah arsip foto');
@@ -85,7 +91,7 @@ class PhotoController extends Controller
         return view('photo.edit', compact('gallery', 'photo'));
     }
 
-    public function update(Request $request,$gallery, $photo)
+    public function update(Request $request, $gallery, $photo)
     {
         $request->validate([
             'name' => ['required', 'string'],

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Field;
+use Cviebrock\EloquentSluggable\Services\SlugService;
 use Illuminate\Http\Request;
 
 class FieldController extends Controller
@@ -20,7 +21,8 @@ class FieldController extends Controller
         ]);
 
         Field::create([
-            'name' => $request->name
+            'name' => $request->name,
+            'slug' => SlugService::createSlug(Field::class, 'slug', $request->name)
         ]);
 
         return redirect()->route('field.index')->withSuccess('Berhasil menambah bidang');
@@ -40,7 +42,8 @@ class FieldController extends Controller
 
         $field = Field::findOrFail($request->id);
         $field->update([
-            'name' => $request->name
+            'name' => $request->name,
+            'slug' => SlugService::createSlug(Field::class, 'slug', $request->name)
         ]);
 
         return redirect()->route('field.index')->withSuccess('Berhasil edit bidang');

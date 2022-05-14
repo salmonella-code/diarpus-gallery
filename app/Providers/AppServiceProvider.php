@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Field;
+use App\Models\Village;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,6 +26,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        View::composer('*', function($view)
+        {
+            $villages =Village::all();
+            $fields = Field::all();
+            $view->with('fields', $fields)->with('villages', $villages);
+        });
     }
 }

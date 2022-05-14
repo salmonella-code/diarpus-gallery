@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Field;
 use App\Models\Gallery;
 use Carbon\Carbon;
+use Cviebrock\EloquentSluggable\Services\SlugService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -12,16 +13,22 @@ use Illuminate\Support\Str;
 
 class VideoController extends Controller
 {
+    function finder($slug)
+    {
+        $result =  Field::where('slug',$slug)->firstOrFail();
+        return $result;
+    }
+
     public function index($gallery)
     {
-        $galleries =  Field::findOrFail($gallery);
+        $galleries = $this->finder($gallery);
  
         return view('video.index', compact('galleries'));
     }
 
     public function create($gallery)
     {
-        $galleries =  Field::findOrFail($gallery);
+        $galleries =  $this->finder($gallery);
 
         return view('video.create', compact('galleries'));
     }
@@ -39,9 +46,9 @@ class VideoController extends Controller
     
             $media = Gallery::create([
                 'user_id' => auth()->user()->id,
-                'field_id' => $gallery,
+                'field_id' => $this->finder($gallery)->id,
                 'name' => $request->name,
-                'slug' => Str::slug($request->name),
+                'slug' => SlugService::createSlug(Gallery::class, 'slug', $request->name),
                 'category' => 'video',
                 'description' => $request->description,
                 'activity' => Carbon::parse($request->date),

@@ -3,7 +3,7 @@
 @section('page_title', $galleries->name)
 
 @section('content')
-    <a href="{{ route('photo.create', $galleries->id) }}" class="btn btn-success mb-3"><i
+    <a href="{{ route('photo.create', $galleries->slug) }}" class="btn btn-success mb-3"><i
             class="fas fa-plus-circle fa-fw"></i> Foto</a>
     @if (Session::has('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -27,21 +27,21 @@
                                 alt="foto" id="photo">
                             <div class="card-img-overlay d-flex align-items-center justify-content-center">
                                 <div class="d-flex">
-                                    <a href="{{ route('photo.download', ['gallery' => $galleries->id, 'photo' => $item->id]) }}"
+                                    <a href="{{ route('photo.download', ['gallery' => $galleries->slug, 'photo' => $item->id]) }}"
                                         class="btn btn-outline-info me-1" target="_blank">
                                         <i class="fas fa-download fa-fw"></i>
                                     </a>
-                                    <a href="{{ route('photo.show', ['gallery' => $galleries->id, 'photo' => $item->id]) }}"
+                                    <a href="{{ route('photo.show', ['gallery' => $galleries->slug, 'photo' => $item->id]) }}"
                                         class="btn btn-outline-primary me-1">
                                         <i class="fas fa-eye fa-fw"></i>
                                     </a>
-                                    <a href="{{ route('photo.edit', ['gallery' => $galleries->id, 'photo' => $item->id]) }}"
+                                    <a href="{{ route('photo.edit', ['gallery' => $galleries->slug, 'photo' => $item->id]) }}"
                                         class="btn btn-outline-warning me-1">
                                         <i class="fas fa-edit fa-fw"></i>
                                     </a>
                                     <a href="#" onclick="return confirm('Apakah anda yakin ingin menghapus foto ini ??');">
                                         <form
-                                            action="{{ route('photo.destroy', ['gallery' => $galleries->id, 'photo' => $item->id]) }}"
+                                            action="{{ route('photo.destroy', ['gallery' => $galleries->slug, 'photo' => $item->id]) }}"
                                             method="post">
                                             @csrf
                                             @method('delete')

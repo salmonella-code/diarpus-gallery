@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="d-flex mb-3">
-    <a href="{{ route('photo.index', $photo->field->id) }}" class="btn btn-sm btn-success me-3">
+    <a href="{{ route('photo.index', $photo->field->slug) }}" class="btn btn-sm btn-success me-3">
         <i class="fas fa-arrow-alt-circle-left fa-fw align-middle"></i> <span class="align-middle">Kembali</span>
     </a>
 
