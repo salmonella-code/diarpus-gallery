@@ -67,8 +67,11 @@
                                 <li class="submenu-item {{ request()->is('admin*') ? 'active' : '' }}">
                                     <a href="{{ route('admin.index') }}">Admin</a>
                                 </li>
-                                <li class="submenu-item ">
+                                <li class="submenu-item {{ request()->is('user*') ? 'active' : '' }}">
                                     <a href="{{ route('user.index') }}">User</a>
+                                </li>
+                                <li class="submenu-item {{ request()->is('village-user*') ? 'active' : '' }}">
+                                    <a href="{{ url('/village-user') }}">Desa</a>
                                 </li>
                             </ul>
                         </li>

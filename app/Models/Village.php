@@ -31,4 +31,14 @@ class Village extends Model
             ]
         ];
     }
+
+    public function galleries()
+    {
+        return $this->hasMany(Gallery::class, 'village_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsToMany(User::class);
+    }
 }

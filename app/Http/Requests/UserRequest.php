@@ -25,19 +25,19 @@ class UserRequest extends FormRequest
     public function rules()
     {
         if (request()->isMethod('post')) {
-            $field = ['required', 'string'];
+            $field = ['sometimes', 'required', 'string'];
             $nip = 'unique:users,nip';
             $contact = 'unique:users,contact';
             $email = 'unique:users,email';
         }elseif (request()->isMethod('put')) {
-            $field = ['required', 'string'];
-            $nip = Rule::unique('users', 'nip')->ignore($this->admin->id);
-            $contact = Rule::unique('users', 'contact')->ignore($this->admin->id);
-            $email = Rule::unique('users', 'email')->ignore($this->admin->id);
+            $field = ['sometimes', 'required', 'string'];
+            $nip = Rule::unique('users', 'nip')->ignore($this->id);
+            $contact = Rule::unique('users', 'contact')->ignore($this->id);
+            $email = Rule::unique('users', 'email')->ignore($this->id);
         }
 
-        if(request()->routeIs('admin.store') || request()->routeIs('admin.update')){
-            $field = ['nullable'];
+        if(request()->routeIs('admin.store') || request()->routeIs('admin.update') || request()->is('village-user*')){
+            $field = ['sometimes', 'nullable'];
         }
 
         return [
@@ -48,6 +48,7 @@ class UserRequest extends FormRequest
             'name' => ['required', 'string'],
             'contact' => ['required', 'numeric', $contact, 'min:10'],
             'email' => ['required', 'email', $email],
+            'village' => ['sometimes', 'required', 'string']
         ];
     }
 }

@@ -58,4 +58,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(Gallery::class, 'user_id');
     }
+
+    public function village()
+    {
+        return $this->belongsToMany(Village::class, 'village_user', 'user_id', 'village_id');
+    }
 }
