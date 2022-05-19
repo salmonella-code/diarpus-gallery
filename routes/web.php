@@ -42,18 +42,18 @@ Route::middleware('auth')->group(function(){
         Route::get('admin', [AdminController::class, 'index'])->name('admin.index');
         Route::get('admin/create', [AdminController::class, 'create'])->name('admin.create');
         Route::post('admin', [AdminController::class, 'store'])->name('admin.store');
-        Route::get('admin/{admin}', [AdminController::class, 'show'])->name('admin.show');
-        Route::get('admin/{admin}/edit', [AdminController::class, 'edit'])->name('admin.edit');
-        Route::put('admin/{admin}', [AdminController::class, 'update'])->name('admin.update');
-        Route::delete('admin/{admin}', [AdminController::class, 'destroy'])->name('admin.destroy');
+        Route::get('admin/{id}', [AdminController::class, 'show'])->name('admin.show');
+        Route::get('admin/{id}/edit', [AdminController::class, 'edit'])->name('admin.edit');
+        Route::put('admin/{id}', [AdminController::class, 'update'])->name('admin.update');
+        Route::delete('admin/{id}', [AdminController::class, 'destroy'])->name('admin.destroy');
         
         Route::get('user', [UserController::class, 'index'])->name('user.index');
         Route::get('user/create', [UserController::class, 'create'])->name('user.create');
         Route::post('user', [UserController::class, 'store'])->name('user.store');
-        Route::get('user/{admin}', [UserController::class, 'show'])->name('user.show');
-        Route::get('user/{admin}/edit', [UserController::class, 'edit'])->name('user.edit');
-        Route::put('user/{admin}', [UserController::class, 'update'])->name('user.update');
-        Route::delete('user/{admin}', [UserController::class, 'destroy'])->name('user.destroy');
+        Route::get('user/{id}', [UserController::class, 'show'])->name('user.show');
+        Route::get('user/{id}/edit', [UserController::class, 'edit'])->name('user.edit');
+        Route::put('user/{id}', [UserController::class, 'update'])->name('user.update');
+        Route::delete('user/{id}', [UserController::class, 'destroy'])->name('user.destroy');
 
         // village
         Route::get('/village', [VillageController::class, 'index'])->name('village.index');
