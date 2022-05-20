@@ -44,8 +44,8 @@
                         </li>
 
                         @if (auth()->user()->role == 'admin')
-                        <li class="sidebar-item {{ request()->is('village*') ? 'active' : '' }} ">
-                            <a href="{{ url('/village') }}" class='sidebar-link'>
+                        <li class="sidebar-item {{ request()->is('villages*') ? 'active' : '' }} ">
+                            <a href="{{ route('village.index') }}" class='sidebar-link'>
                                 <i class="fas fa-fw fa-map"></i>
                                 <span>Desa</span>
                             </a>
@@ -102,7 +102,7 @@
                                         <span>{{ $village->village }}</span>
                                     </a>
                                     <ul class="submenu ">
-                                        <li class="submenu-item {{ request()->is('gallery/' . $village->slug . '/photo*') ? 'active' : '' }}">
+                                    <li class="submenu-item {{ request()->is('gallery/' . $village->slug . '/photo*') ? 'active' : '' }}">
                                             <a href="{{ route('photo.index', $village->slug) }}">Photo</a>
                                         </li>
                                         <li class="submenu-item {{ request()->is('gallery/' . $village->slug . '/video*') ? 'active' : '' }}">

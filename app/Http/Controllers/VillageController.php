@@ -6,6 +6,7 @@ use App\Http\Requests\VillageRequest;
 use App\Models\Village;
 use Illuminate\Http\Request;
 use Cviebrock\EloquentSluggable\Services\SlugService;
+use Illuminate\Support\Facades\File;
 use Yajra\DataTables\Facades\DataTables;
 
 class VillageController extends Controller
@@ -30,7 +31,7 @@ class VillageController extends Controller
     public function store(VillageRequest $request)
     {
         try {
-            Village::create([
+            $village = Village::create([
                 'province' => $request->province,
                 'regency' => $request->regency,
                 'district' => $request->district,
@@ -42,9 +43,14 @@ class VillageController extends Controller
                 'head_village' => $request->head_village,
                 'slug' =>  SlugService::createSlug(Village::class, 'slug', $request->village),
             ]);
-            return redirect('/village')->withSuccess('Berhasil menambah desa');
+
+            if (!File::isDirectory('village/'.$village->slug)) {
+                File::makeDirectory('village/'.$village->slug, 0777, true, true);
+            }
+
+            return redirect()->route('village.index')->withSuccess('Berhasil menambah desa');
         } catch (\Exception $e) {
-            return redirect('/village')->with('error', 'Gagal menambah desa '. $e->getMessage());
+            return redirect()->route('village.index')->with('error', 'Gagal menambah desa');
         }
     }
 
@@ -64,6 +70,7 @@ class VillageController extends Controller
     {
         try {
             $village = Village::findOrFail($id);
+            $old = $village->slug;
             $village->update([
                     'province' => $request->province,
                     'regency' => $request->regency,
@@ -76,9 +83,14 @@ class VillageController extends Controller
                     'head_village' => $request->head_village,
                     'slug' =>  SlugService::createSlug(Village::class, 'slug', $request->village),
                 ]);
-                return redirect('/village')->withSuccess('Berhasil update desa');
+
+            if(isset($village->getChanges()['slug']) == true){
+                rename('village/'.$old, 'village/'.$village->slug);
+            }
+
+            return redirect()->route('village.index')->withSuccess('Berhasil update desa');
         } catch (\Exception $e) {
-            return redirect('/village')->with('error', 'Gagal update desa '. $e->getMessage());
+            return redirect()->route('village.index')->with('error', 'Gagal update desa');
         }
     }
 
@@ -87,9 +99,10 @@ class VillageController extends Controller
         try {
             $village =  Village::findOrFail($id);
             $village->delete();
-            return redirect('/village')->withSuccess('Berhasil menghapus desa');
+            File::deleteDirectory('village/'.$village->slug);
+            return redirect()->route('village.index')->withSuccess('Berhasil menghapus desa');
         } catch (\Exception $e) {
-            return redirect('/village')->with('error', 'Gagal menghapus desa '. $e->getMessage());
+            return redirect()->route('village.index')->with('error', 'Gagal menghapus desa');
         }
     }
 }

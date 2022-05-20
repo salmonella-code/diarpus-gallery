@@ -39,6 +39,6 @@ class Village extends Model
 
     public function user()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class, 'village_user', 'village_id', 'user_id');
     }
 }

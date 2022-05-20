@@ -30,7 +30,7 @@
                             <td>{{ $user->position }}</td>
                             <td>{{ $user->email }}</td>
                             <td>{{ $user->contact }}</td>
-                            <td>{{ $user->village[0]->village }}</td>
+                            <td>{{ !empty($user->village) ? '' : $user->village[0]->village }}</td>
                             <td>
                                 <div class="d-flex">
                                     <a href="{{ url('/village-user/'.$user->id.'/show') }}" class="btn btn-sm btn-info me-2">

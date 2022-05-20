@@ -56,13 +56,13 @@ Route::middleware('auth')->group(function(){
         Route::delete('user/{id}', [UserController::class, 'destroy'])->name('user.destroy');
 
         // village
-        Route::get('/village', [VillageController::class, 'index'])->name('village.index');
-        Route::get('/village/create', [VillageController::class, 'create']);
-        Route::post('/village', [VillageController::class, 'store']);
-        Route::get('/village/{id}/show', [VillageController::class, 'show']);
-        Route::get('/village/{id}', [VillageController::class, 'edit']);
-        Route::put('/village/{id}', [VillageController::class, 'update']);
-        Route::delete('/village/{id}', [VillageController::class, 'destroy']);
+        Route::get('/villages', [VillageController::class, 'index'])->name('village.index');
+        Route::get('/villages/create', [VillageController::class, 'create']);
+        Route::post('/villages', [VillageController::class, 'store']);
+        Route::get('/villages/{id}/show', [VillageController::class, 'show']);
+        Route::get('/villages/{id}', [VillageController::class, 'edit']);
+        Route::put('/villages/{id}', [VillageController::class, 'update']);
+        Route::delete('/villages/{id}', [VillageController::class, 'destroy']);
         // end village
 
         // village user
@@ -103,7 +103,7 @@ Route::middleware('auth')->group(function(){
     Route::delete('delete/media', [UploadController::class, 'destroyMedia'])->name('destroy.media');
     Route::delete('/delete/photo/{id}', [UploadController::class, 'deletePhoto']);
     // uploader
-    
+
     Route::get('profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::get('profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');

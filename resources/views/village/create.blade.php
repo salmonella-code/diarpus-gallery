@@ -5,7 +5,7 @@
 @section('content')
     <div class="card shadow-sm">
         <div class="card-body">
-            <form action="{{ url('/village') }}" method="post">
+            <form action="{{ url('/villages') }}" method="post">
                 @csrf
                 <div class="row  row-cols-1 row-cols-sm-2">
                     <div class="col">

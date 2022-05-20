@@ -7,7 +7,7 @@
 @section('page_title', 'Data Desa')
 
 @section('content')
-    <a href="{{ url('/village/create') }}" class="btn btn-success mb-3">
+    <a href="{{ url('/villages/create') }}" class="btn btn-success mb-3">
         <i class="fa fa-plus-circle align-middle" aria-hidden="true"></i> <span class="align-middle">Desa</span>
     </a>
 
