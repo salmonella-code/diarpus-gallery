@@ -26,7 +26,7 @@ class Field extends Model
 
     public function user()
     {
-        return $this->hasOne(User::class, 'field_id');
+        return $this->belongsToMany(User::class)->using(FieldUser::class);
     }
 
     public function galleries()

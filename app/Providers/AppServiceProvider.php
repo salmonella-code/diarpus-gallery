@@ -28,9 +28,8 @@ class AppServiceProvider extends ServiceProvider
     {
         View::composer('*', function($view)
         {
-            $villages =Village::all();
             $fields = Field::all();
-            $view->with('fields', $fields)->with('villages', $villages);
+            $view->with('fields', $fields);
         });
     }
 }

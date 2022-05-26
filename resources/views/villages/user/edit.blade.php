@@ -13,13 +13,13 @@
                     <select class="form-select" name="village" id="village" @error('village') is-invalid @enderror>
                         <option selected disabled>-- Pilih Desa ---</option>
                         @foreach ($villages as $village)
-                        <option value="{{ $village->id }}" {{ old('village', $user->village[0]->id) == $village->id ? 'selected' : '' }}>{{ $village->village }}</option>
+                            <option value="{{ $village->id }}" {{ old('village', $user->village->isEmpty() ? '' : $user->village->first()->id) == $village->id ? 'selected' : '' }}>{{ $village->name }}</option>
                         @endforeach
                     </select>
-                    @error('field')
-                    <div class="invalid-feedback">
-                        "{{ $message }}"
-                    </div>
+                    @error('village')
+                        <div class="invalid-feedback">
+                            "{{ $message }}"
+                        </div>
                     @enderror
                 </div>
                 <div class="form-group mb-3">

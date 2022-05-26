@@ -34,10 +34,7 @@ class VillageRequest extends FormRequest
         }
 
         return [
-            'province' => ['required', 'string', 'min:2'],
-            'regency' => ['required', 'string', 'min:2'],
-            'district' => ['required', 'string', 'min:2'],
-            'village' => ['required', 'string', 'min:2'],
+            'village' => ['required', 'string'],
             'email' => ['nullable', 'email', 'min:2', $email],
             'phone' => ['nullable', 'numeric', 'min:2', $phone],
             'rw' => ['nullable', 'numeric'],

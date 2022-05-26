@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateVillageUserTable extends Migration
+class CreateFieldUser extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,9 @@ class CreateVillageUserTable extends Migration
      */
     public function up()
     {
-        Schema::create('village_user', function (Blueprint $table) {
-            $table->id();
+        Schema::create('field_user', function (Blueprint $table) {
             $table->foreignId('user_id')->constrained('users', 'id')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('village_id')->constrained('villages', 'id')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->timestamps();
+            $table->foreignId('field_id')->constrained('fields', 'id')->cascadeOnDelete()->cascadeOnUpdate();
         });
     }
 
@@ -28,6 +26,6 @@ class CreateVillageUserTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('village_user');
+        Schema::dropIfExists('field_user');
     }
 }

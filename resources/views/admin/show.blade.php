@@ -10,6 +10,9 @@
                 <img src="{{ asset('avatar/' . $admin->avatar) }}" alt="">
             </div>
 
+            <label class="form-label">Bidang</label>
+            <p class="form-control">{{  $admin->field->isEmpty() ? 'Bidang tidak ada' : $admin->field->first()->name }}</p>
+
             <div class="row row-cols-1 row-cols-md-2">
                 <div class="col">
                     <label class="form-label">NIP</label>

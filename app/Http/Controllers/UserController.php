@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
 use App\Models\Field;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 
@@ -12,7 +13,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::where('role', 'user')->get();
+        $users = User::role('user')->get();
         return view('user.index', compact('users'));
     }
 
@@ -24,9 +25,9 @@ class UserController extends Controller
 
     public function store(UserRequest $request)
     {
+        DB::beginTransaction();
         try {
-            User::create([
-                'field_id' => $request->field,
+            $user = User::create([
                 'nip' => $request->nip,
                 'group' => $request->group,
                 'position' => $request->position,
@@ -34,12 +35,19 @@ class UserController extends Controller
                 'contact' => $request->contact,
                 'email' => $request->email,
                 'password' => Hash::make('diarpus789'),
-                'role' => 'user',
                 'avatar' => 'avatar.jpg'
             ]);
+
+            $user->assignRole('user');
+
+            $user->field()->attach($request->field);
+
+            DB::commit();
     
-            return redirect()->route('user.index')->withSuccess('Berhasil menambah user');
+            return redirect()->route('user.index')->withSuccess('Berhasil menambah user: '. $user->name);
         } catch (\Exception $e) {
+            DB::rollBack();
+
             return redirect()->route('user.index')->withSuccess('Gagal menambah user');
         }
     }
@@ -59,10 +67,11 @@ class UserController extends Controller
 
     public function update(UserRequest $request, $id)
     {
+        DB::beginTransaction();
         try{
             $user = User::findOrFail($id);
+
             $user->update([
-                'field_id' => $request->field,
                 'nip' => $request->nip,
                 'group' => $request->group,
                 'position' => $request->position,
@@ -71,8 +80,13 @@ class UserController extends Controller
                 'email' => $request->email,
             ]);
     
-            return redirect()->route('user.index')->withSuccess('Berhasil edit user');
+            $user->field()->sync($request->field);
+
+            DB::commit();
+
+            return redirect()->route('user.index')->withSuccess('Berhasil edit user: '. $user->name);
         }catch (\Exception $e) {
+            DB::rollBack();
             return redirect()->route('user.index')->withSuccess('Gagal edit user');
         }
     }
@@ -85,7 +99,7 @@ class UserController extends Controller
                 File::delete('avatar/'.$user->avatar);
             }
             $user->delete();
-            return redirect()->route('user.index')->withSuccess('Berhasil hapus user');
+            return redirect()->route('user.index')->withSuccess('Berhasil hapus user: '. $user->name);
         }catch (\Exception $e) {
             return redirect()->route('user.index')->withSuccess('Gagal hapus user');
         }

@@ -15,7 +15,6 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('field_id')->nullable()->constrained('fields', 'id')->cascadeOnUpdate()->nullOnDelete();
             $table->string('nip')->nullable();
             $table->string('group')->nullable();
             $table->string('position');
@@ -24,7 +23,6 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('role');
             $table->string('avatar')->default('avatar.jpg');
             $table->rememberToken();
             $table->timestamps();

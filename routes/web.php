@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActiveVillageController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ChangePasswordController;
@@ -8,8 +9,8 @@ use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UtilitiesController;
 use App\Http\Controllers\VideoController;
-use App\Http\Controllers\VillageController;
 use App\Http\Controllers\VillageUserController;
 use Illuminate\Support\Facades\Route;
 
@@ -32,7 +33,7 @@ Route::middleware('auth')->group(function(){
     Route::put('/change-password', [ChangePasswordController::class, 'update']);
     // end change password
     
-    Route::middleware('admin')->group(function(){
+    Route::middleware('role:admin')->group(function(){
         Route::get('field', [FieldController::class, 'index'])->name('field.index');
         Route::post('field', [FieldController::class, 'store'])->name('field.store');
         Route::get('field/{id}', [FieldController::class, 'edit'])->name('field.edit');
@@ -56,13 +57,13 @@ Route::middleware('auth')->group(function(){
         Route::delete('user/{id}', [UserController::class, 'destroy'])->name('user.destroy');
 
         // village
-        Route::get('/villages', [VillageController::class, 'index'])->name('village.index');
-        Route::get('/villages/create', [VillageController::class, 'create']);
-        Route::post('/villages', [VillageController::class, 'store']);
-        Route::get('/villages/{id}/show', [VillageController::class, 'show']);
-        Route::get('/villages/{id}', [VillageController::class, 'edit']);
-        Route::put('/villages/{id}', [VillageController::class, 'update']);
-        Route::delete('/villages/{id}', [VillageController::class, 'destroy']);
+        Route::get('/active-village', [ActiveVillageController::class, 'index'])->name('village.index');
+        Route::get('/active-village/create', [ActiveVillageController::class, 'create']);
+        Route::post('/active-village', [ActiveVillageController::class, 'store']);
+        Route::get('/active-village/{id}/show', [ActiveVillageController::class, 'show']);
+        Route::get('/active-village/{id}', [ActiveVillageController::class, 'edit']);
+        Route::put('/active-village/{id}', [ActiveVillageController::class, 'update']);
+        Route::delete('/active-village/{id}', [ActiveVillageController::class, 'destroy']);
         // end village
 
         // village user
@@ -107,4 +108,11 @@ Route::middleware('auth')->group(function(){
     Route::get('profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::get('profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    // utilities
+    Route::get('/utilities/province', [UtilitiesController::class, 'province']);
+    Route::get('/utilities/regency', [UtilitiesController::class, 'regency']);
+    Route::get('/utilities/district', [UtilitiesController::class, 'district']);
+    Route::get('/utilities/village', [UtilitiesController::class, 'village']);
+    // end utilities
 });

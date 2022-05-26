@@ -7,7 +7,7 @@
 @section('page_title', 'Data Desa')
 
 @section('content')
-    <a href="{{ url('/villages/create') }}" class="btn btn-success mb-3">
+    <a href="{{ url('/active-village/create') }}" class="btn btn-success mb-3">
         <i class="fa fa-plus-circle align-middle" aria-hidden="true"></i> <span class="align-middle">Desa</span>
     </a>
 
@@ -22,7 +22,6 @@
                             <th>No</th>
                             <th>Desa</th>
                             <th>Kecamatan</th>
-                            <th>Kota/Kab</th>
                             <th>email</th>
                             <th>phone</th>
                             <th>Aksi</th>
@@ -45,9 +44,8 @@
                 ajax: '{!! route('village.index') !!}',
                 columns: [
                     { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-                    { data: 'village', name: 'village' },
-                    { data: 'district', name: 'district' },
-                    { data: 'regency', name: 'regency' },
+                    { data: 'name', name: 'name' },
+                    { data: 'village', name: 'village.district.name' },
                     { data: 'email', name: 'email' },
                     { data: 'phone', name: 'phone' },
                     { data: 'action', name: 'action' },

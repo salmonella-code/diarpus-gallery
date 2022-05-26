@@ -43,7 +43,7 @@
                             </a>
                         </li>
 
-                        @if (auth()->user()->role == 'admin')
+                        @role('admin')
                         <li class="sidebar-item {{ request()->is('villages*') ? 'active' : '' }} ">
                             <a href="{{ route('village.index') }}" class='sidebar-link'>
                                 <i class="fas fa-fw fa-map"></i>
@@ -95,7 +95,7 @@
                         </li>
                         @endforeach
                         <li class="sidebar-title">Desa-desa</li>
-                            @foreach ($villages as $village)
+                            {{-- @foreach ($villages as $village)
                                 <li class="sidebar-item {{ request()->is('gallery/' . $village->slug . '*') ? 'active' : '' }} has-sub">
                                     <a href="#" class='sidebar-link'>
                                         <i class="fas fa-fw fa-users" aria-hidden="true"></i>
@@ -110,8 +110,8 @@
                                         </li>
                                     </ul>
                                 </li>
-                            @endforeach
-                        @endif
+                            @endforeach --}}
+                        @endrole
 
                         @if (auth()->user()->role == 'user')
                         @foreach (App\Models\Field::where('id', auth()->user()->field_id)->get() as $field)

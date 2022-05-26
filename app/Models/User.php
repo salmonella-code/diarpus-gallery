@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -18,7 +19,6 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'field_id',
         'nip',
         'group',
         'position',
@@ -26,7 +26,6 @@ class User extends Authenticatable
         'contact',
         'email',
         'password',
-        'role',
         'avatar'
     ];
 
@@ -51,7 +50,7 @@ class User extends Authenticatable
 
     public function field()
     {
-        return $this->belongsTo(Field::class, 'field_id');
+        return $this->belongsToMany(Field::class)->using(FieldUser::class);
     }
 
     public function gallery()
@@ -61,6 +60,6 @@ class User extends Authenticatable
 
     public function village()
     {
-        return $this->belongsToMany(Village::class, 'village_user', 'user_id', 'village_id');
+        return $this->belongsToMany(ActiveVillage::class)->using(ActiveVillageUser::class);
     }
 }

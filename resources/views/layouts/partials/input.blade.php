@@ -5,7 +5,7 @@
             <span class="text-danger">*</span>
         @endif
     </label>
-    <input type="{{ $type??'text' }}" class="form-control  @error($name) is-invalid @enderror" id="{{ $name }}" name="{{ $name }}" placeholder="Masukkan {{ $label }}" value="{{ old($name, isset($value) ? $value : null) }}">
+    <input type="{{ $type??'text' }}" class="form-control  @error($name) is-invalid @enderror {{ isset($sm) ? $sm : null }}" id="{{ $name }}" name="{{ $name }}" placeholder="Masukkan {{ $label }}" value="{{ old($name, isset($value) ? $value : null) }}">
     @error($name)
         <span class="invalid-feedback" role="alert">
             <strong>"{{ $message }}"</strong>

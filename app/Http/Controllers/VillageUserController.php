@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
+use App\Models\ActiveVillage;
 use App\Models\User;
-use App\Models\Village;
-use App\Models\VillageUser;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
@@ -15,13 +13,13 @@ class VillageUserController extends Controller
 {
     public function index()
     {
-        $userVillages = User::where('role', 'village')->with('village')->get();
+        $userVillages = User::role('village')->get();
         return view('villages.user.index', compact('userVillages'));
     }
 
     public function create()
     {
-        $villages = Village::all();
+        $villages = ActiveVillage::all();
         return view('villages.user.create', compact('villages'));
     }
 
@@ -29,29 +27,28 @@ class VillageUserController extends Controller
     {
         DB::beginTransaction();
         try {
-            $village = User::create([
+            $user = User::create([
                 'nip' => $request->nip,
                 'group' => $request->group,
                 'position' => $request->position,
                 'name' => $request->name,
                 'contact' => $request->contact,
                 'email' => $request->email,
-                'password' => Hash::make('desa12345'),
-                'role' => 'village',
+                'password' => Hash::make('diarpus789'),
                 'avatar' => 'avatar.jpg'
             ]);
 
-            VillageUser::create([
-                'user_id' => $village->id,
-                'village_id' => $request->village
-            ]); 
+            $user->assignRole('village');
+
+            $user->village()->attach($request->village);
+
             DB::commit();
 
-            return redirect('/village-user')->withSuccess('Berhasil menambah user desa');
+            return redirect('/village-user')->withSuccess('Berhasil menambah user desa: '.$user->name);
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return redirect('/village-user')->with('error', 'Gagal menambah user desa ');
+            return redirect('/village-user')->with('error', 'Gagal menambah user desa '.$e->getMessage());
         }
     }
 
@@ -64,7 +61,7 @@ class VillageUserController extends Controller
     public function edit($id)
     {
         $user = User::findOrFail($id);
-        $villages = Village::all();
+        $villages = ActiveVillage::all();
         return view('villages.user.edit', compact('user', 'villages'));
     }
 
@@ -72,9 +69,9 @@ class VillageUserController extends Controller
     {
         DB::beginTransaction();
         try {
-            $village = User::findOrFail($id);
+            $user = User::findOrFail($id);
 
-            $village->update([
+            $user->update([
                 'nip' => $request->nip,
                 'group' => $request->group,
                 'position' => $request->position,
@@ -82,14 +79,12 @@ class VillageUserController extends Controller
                 'contact' => $request->contact,
                 'email' => $request->email,
             ]);
-
-            $village->village()->update([
-                'village_id' => $request->village,
-            ]);
+    
+            $user->village()->sync($request->village);
 
             DB::commit();
             
-            return redirect('/village-user')->withSuccess('Berhasil edit user desa');
+            return redirect('/village-user')->withSuccess('Berhasil edit user desa: '.$user->name);
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -105,6 +100,6 @@ class VillageUserController extends Controller
             File::delete('avatar/'.$user->avatar);
         }
         $user->delete();
-        return redirect('/village-user')->withSuccess('Berhasil hapus user desa');
+        return redirect('/village-user')->withSuccess('Berhasil hapus user desa: '.$user->name);
     }
 }

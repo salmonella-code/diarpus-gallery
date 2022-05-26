@@ -15,8 +15,7 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        User::create([
-            'field_id' => null,
+        $admin = User::create([
             'nip' => null,
             'group' => null,
             'position' => 'kepala dinas',
@@ -24,12 +23,11 @@ class UserSeeder extends Seeder
             'contact' => '085889452316',
             'email' => 'admin@test.com',
             'password' => Hash::make(12345678),
-            'role' => 'admin',
-            'avatar' => '1642563658.jpg'
+            'avatar' => 'avatar.jpg'
         ]);
+        $admin->assignRole('admin');
 
-        User::create([
-            'field_id' => 1,
+        $user = User::create([
             'nip' => null,
             'group' => null,
             'position' => 'kepala bidang',
@@ -37,8 +35,9 @@ class UserSeeder extends Seeder
             'contact' => '085789452316',
             'email' => 'user@test.com',
             'password' => Hash::make(12345678),
-            'role' => 'user',
             'avatar' => 'avatar.jpg'
         ]);
+        $user->assignRole('user');
+        $user->field()->attach(1);
     }
 }

@@ -13,7 +13,7 @@
                     <select class="form-select" name="field" id="field" @error('field') is-invalid @enderror>
                         <option selected disabled>-- Pilih Bidang ---</option>
                         @foreach ($fields as $field)
-                        <option value="{{ $field->id }}" {{ old('field', $user->field_id) == $field->id ? 'selected' : '' }}>{{ $field->name }}</option>
+                        <option value="{{ $field->id }}" {{ old('field',  $user->field->isEmpty() ? '' : $user->field->first()->id) == $field->id ? 'selected' : '' }}>{{ $field->name }}</option>
                         @endforeach
                     </select>
                     @error('field')

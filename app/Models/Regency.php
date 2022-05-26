@@ -9,23 +9,22 @@
 
 namespace App\Models;
 
-use AzisHapidin\IndoRegion\Traits\VillageTrait;
+use AzisHapidin\IndoRegion\Traits\RegencyTrait;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\District;
 
 /**
- * Village Model.
+ * Regency Model.
  */
-class Village extends Model
+class Regency extends Model
 {
-    use VillageTrait;
+    use RegencyTrait;
 
     /**
      * Table name.
      *
      * @var string
      */
-    protected $table = 'villages';
+    protected $table = 'regencies';
 
     /**
      * The attributes that should be hidden for arrays.
@@ -33,25 +32,30 @@ class Village extends Model
      * @var array
      */
     protected $hidden = [
-        'district_id'
+        'province_id'
     ];
 
-	/**
-     * Village belongs to District.
+    /**
+     * Regency belongs to Province.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function district()
+    public function province()
     {
-        return $this->belongsTo(District::class);
+        return $this->belongsTo(Province::class);
+    }
+
+    /**
+     * Regency has many districts.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function districts()
+    {
+        return $this->hasMany(District::class);
     }
 
     public $incrementing = false;
 
     protected $keyType = 'string';
-
-    public function activeVillage()
-    {
-        return $this->hasOne(ActiveVillage::class, 'village_id');
-    }
 }

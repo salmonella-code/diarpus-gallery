@@ -12,7 +12,7 @@
                 <select class="form-select" name="village" id="village" @error('village') is-invalid @enderror>
                     <option selected disabled>-- Pilih Desa ---</option>
                     @foreach ($villages as $village)
-                    <option value="{{ $village->id }}" {{ old('village') == $village->id ? 'selected' : '' }}>{{ $village->village }}</option>
+                    <option value="{{ $village->id }}" {{ old('village') == $village->id ? 'selected' : '' }}>{{ $village->name }}</option>
                     @endforeach
                 </select>
                 @error('village')

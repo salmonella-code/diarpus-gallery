@@ -7,18 +7,18 @@
         <div class="card-body">
                 <div class="row  row-cols-1 row-cols-sm-2">
                     <div class="col">
-                        @include('layouts.partials.formParagraf', ['name' => 'provinsi', 'required' => true, 'value' => $village->province])
+                        @include('layouts.partials.formParagraf', ['name' => 'provinsi', 'required' => true, 'value' => $village->village->district->regency->province->name])
                     </div>
                     <div class="col">
-                        @include('layouts.partials.formParagraf', ['name' => 'kota/kabupaten', 'required' => true, 'value' => $village->regency])
+                        @include('layouts.partials.formParagraf', ['name' => 'kota/kabupaten', 'required' => true, 'value' => $village->village->district->regency->name])
                     </div>
                 </div>
                 <div class="row  row-cols-1 row-cols-sm-2">
                     <div class="col">
-                        @include('layouts.partials.formParagraf', ['name' => 'kecamatan', 'required' => true, 'value' => $village->district])
+                        @include('layouts.partials.formParagraf', ['name' => 'kecamatan', 'required' => true, 'value' => $village->village->district->name])
                     </div>
                     <div class="col">
-                        @include('layouts.partials.formParagraf', ['name' => 'desa', 'required' => true, 'value' => $village->village])
+                        @include('layouts.partials.formParagraf', ['name' => 'desa', 'required' => true, 'value' => $village->name])
                     </div>
                 </div>
                 <div class="row  row-cols-1 row-cols-sm-2">
