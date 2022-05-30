@@ -39,7 +39,7 @@
                             <li class="list-group-item"><i class="fas fa-phone-alt fa-fw"></i> {{ $profile->contact }}
                             </li>
                             <li class="list-group-item"><i class="fas fa-puzzle-piece   fa-fw"></i>
-                                {{ is_null($profile->field) ? '-' : $profile->field->name }}</li>
+                                {{  $profile->field->isEmpty() ? 'Bidang tidak ada' : $profile->field->first()->name }}</li>
                         </ul>
                     </div>
                 </div>
