@@ -38,8 +38,13 @@
                             </li>
                             <li class="list-group-item"><i class="fas fa-phone-alt fa-fw"></i> {{ $profile->contact }}
                             </li>
-                            <li class="list-group-item"><i class="fas fa-puzzle-piece   fa-fw"></i>
+                            @hasanyrole('admin|user')
+                            <li class="list-group-item"><i class="fas fa-puzzle-piece fa-fw"></i>
                                 {{  $profile->field->isEmpty() ? 'Bidang tidak ada' : $profile->field->first()->name }}</li>
+                            @else
+                            <li class="list-group-item"><i class="fas fa-puzzle-piece fa-fw"></i>
+                                {{  $profile->village->isEmpty() ? 'Desa tidak ada' : $profile->village->first()->name }}</li>
+                            @endhasanyrole
                         </ul>
                     </div>
                 </div>
