@@ -56,6 +56,9 @@ class ActiveVillageController extends Controller
 
             if (!File::isDirectory('village/'.$village->slug)) {
                 File::makeDirectory('village/'.$village->slug, 0777, true, true);
+                File::makeDirectory('village/'.$village->slug.'/leter-c', 0777, true, true);
+                File::makeDirectory('village/'.$village->slug.'/photo', 0777, true, true);
+                File::makeDirectory('village/'.$village->slug.'/video', 0777, true, true);
             }
 
             return redirect()->route('village.index')->withSuccess('Berhasil menambah desa: '.$village->name);

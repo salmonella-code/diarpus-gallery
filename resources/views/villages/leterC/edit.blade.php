@@ -27,7 +27,7 @@
                     <span class="text-muted"><i>Ukuran Maksimal: 2Mb</i></span>
                     <div class="wrapper px-0 mx-sm-3 mx-0 mb-3">
                         <div class="thumb-wrap mb-1">
-                            <img src="{{ asset('village/'.$village.'/'.$leterC->scan) }}" alt="{{ $leterC->scan }}">
+                            <img src="{{ asset('village/'.$village.'/leter-c/'.$leterC->scan) }}" alt="{{ $leterC->scan }}">
                         </div>
                     </div>
                     <input type="file" name="path" id="path" value="{{ old('path') }}" required/>

@@ -1,5 +1,5 @@
 <div class="d-flex">
-    <a href="{{ asset('village/'.$village.'/'.$model->scan) }}" class="btn btn-sm btn-primary me-2">
+    <a href="{{ asset('village/'.$village.'/leter-c/'.$model->scan) }}" class="btn btn-sm btn-primary me-2">
         <i class="fas fa-fw fa-download align-middle" aria-hidden="true"></i>
     </a>
     <a href="{{ url('/'.$village.'/leter-c/'.$model->id.'/show') }}" class="btn btn-sm btn-success me-2">

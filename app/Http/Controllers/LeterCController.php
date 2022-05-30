@@ -49,7 +49,7 @@ class LeterCController extends Controller
             ]);
 
             $old = 'tmp/uploads/'.$request->scan;
-            $new = 'village/'.$village.'/'.$request->scan;
+            $new = 'village/'.$village.'/leter-c/'.$request->scan;
             File::move($old, $new);
 
             return redirect()->route('leterC.index', $village)->withSuccess('Berhasil menambah data leter c: '. $LeterC->name);
@@ -86,9 +86,9 @@ class LeterCController extends Controller
             ]);
 
             if($request->scan !=  null){
-                File::delete('village/'.$village.'/'.$oldScan);
+                File::delete('village/'.$village.'/leter-c/'.$oldScan);
                 $old = 'tmp/uploads/'.$request->scan;
-                $new = 'village/'.$village.'/'.$request->scan;
+                $new = 'village/'.$village.'/leter-c/'.$request->scan;
                 File::move($old, $new);
             }
 
@@ -102,8 +102,9 @@ class LeterCController extends Controller
     {
         try {
             $leterC = LeterC::findOrFail($id);
-            File::delete('village/'.$village.'/'.$leterC->scan);
-
+            File::delete('village/'.$village.'/leter-c/'.$leterC->scan);
+            $leterC->delete();
+            
             return redirect()->route('leterC.index', $village)->withSuccess('Berhasil hapus data leter c: '. $leterC->name);
         } catch (\Exception $e) {
             return redirect()->route('leterC.index', $village)->with('error', 'Gagal hapus data leter c');

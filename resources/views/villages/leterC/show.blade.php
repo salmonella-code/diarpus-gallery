@@ -17,7 +17,7 @@
             <label class="form-label text-capitalize">alamat</label>
             <p class="form-control">{{ $leterC->address }}</p>
         </div>
-        <img src="{{ asset('village/'.$village.'/'.$leterC->scan) }}" alt="{{ $leterC->scan }}" class="img-fluid mb-3">
+        <img src="{{ asset('village/'.$village.'/leter-c/'.$leterC->scan) }}" alt="{{ $leterC->scan }}" class="img-fluid mb-3">
     </div>
 </div>
 @endsection
