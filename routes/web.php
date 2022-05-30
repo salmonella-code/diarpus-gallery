@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ChangePasswordController;
 use App\Http\Controllers\FieldController;
+use App\Http\Controllers\LeterCController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UploadController;
@@ -75,6 +76,16 @@ Route::middleware('auth')->group(function(){
         Route::put('/village-user/{id}', [VillageUserController::class, 'update']);
         Route::delete('/village-user/{id}', [VillageUserController::class, 'destroy']);
         // end village user
+    });
+
+    Route::middleware('role:admin|village')->group(function(){
+        Route::get('/{village}/leter-c', [LeterCController::class, 'index'])->name('leterC.index');
+        Route::get('/{village}/leter-c/create', [LeterCController::class, 'create']);
+        Route::post('/{village}/leter-c', [LeterCController::class, 'store']);
+        Route::get('/{village}/leter-c/{id}/show', [LeterCController::class, 'show']);
+        Route::get('/{village}/leter-c/{id}', [LeterCController::class, 'edit']);
+        Route::put('/{village}/leter-c/{id}', [LeterCController::class, 'update']);
+        Route::delete('/{village}/leter-c/{id}', [LeterCController::class, 'destroy']);
     });
     
     // photo

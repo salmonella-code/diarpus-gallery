@@ -39,4 +39,9 @@ class ActiveVillage extends Model
     {
         return $this->belongsToMany(User::class)->using(ActiveVillageUser::class);
     }
+
+    public function leterCS()
+    {
+        return $this->hasMany(LeterC::class, 'village_id');
+    }
 }
