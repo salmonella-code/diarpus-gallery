@@ -12,6 +12,7 @@ class LeterC extends Model
     protected $fillable = [
         'village_id',
         'register_number',
+        'bin',
         'name',
         'address',
         'scan',

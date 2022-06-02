@@ -43,6 +43,7 @@ class LeterCController extends Controller
             $LeterC = LeterC::create([
                 'village_id' => $dataVillage->id,
                 'register_number' => $request->register_number,
+                'bin' => $request->bin,
                 'name' => $request->name,
                 'address' => $request->address,
                 'scan' => $request->scan,
@@ -84,12 +85,15 @@ class LeterCController extends Controller
 
             $leterC->update([
                 'register_number' => $request->register_number,
+                'bin' => $request->bin,
                 'name' => $request->name,
                 'address' => $request->address,
-                'scan' => $request->scan,
             ]);
 
             if($request->scan !=  null){
+                $leterC->update([
+                    'scan' => $request->scan,
+                ]);
                 File::delete('village/'.$village.'/leter-c/'.$oldScan);
                 $old = 'tmp/uploads/'.$request->scan;
                 $new = 'village/'.$village.'/leter-c/'.$request->scan;
@@ -98,7 +102,7 @@ class LeterCController extends Controller
 
             return redirect()->route('leterC.index', $village)->withSuccess('Berhasil update data leter c: '. $leterC->name);
         } catch (\Exception $e) {
-            return redirect()->route('leterC.index', $village)->with('error', 'Gagal update data leter c');
+            return redirect()->route('leterC.index', $village)->with('error', 'Gagal update data leter c: '. $e->getMessage());
         }
     }
 

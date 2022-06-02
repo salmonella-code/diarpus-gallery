@@ -15,6 +15,8 @@
             <form action="{{ url('/'.$village.'/leter-c') }}" method="post" enctype="multipart/form-data">
                 @csrf
                 @include('layouts.partials.input', ['name' => 'register_number', 'label' => 'nomor', 'required' => true])
+
+                @include('layouts.partials.input', ['name' => 'bin', 'label' => 'bin'])
                 
                 @include('layouts.partials.input', ['name' => 'name', 'label' => 'nawa wajib pajak', 'required' => true])
 

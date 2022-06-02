@@ -10,6 +10,10 @@
             <p class="form-control">{{ $leterC->register_number }}</p>
         </div>
         <div class="mb-3">
+            <label class="form-label text-capitalize">bin</label>
+            <p class="form-control">{{ $leterC->bin }}</p>
+        </div>
+        <div class="mb-3">
             <label class="form-label text-capitalize">nama wajib pajak</label>
             <p class="form-control">{{ $leterC->name }}</p>
         </div>

@@ -25,6 +25,7 @@ class LeterCRequest extends FormRequest
     {
         return [
             'register_number' => ['required', 'numeric'],
+            'bin' => ['nullable', 'string'],
             'name' => ['required', 'string'],
             'address' => ['required', 'string'],
         ];

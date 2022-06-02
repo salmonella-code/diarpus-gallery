@@ -17,6 +17,7 @@ class CreateLeterCSTable extends Migration
             $table->id();
             $table->foreignId('village_id')->constrained('active_villages', 'id')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('register_number');
+            $table->string('bin')->nullable();
             $table->string('name');
             $table->text('address');
             $table->string('scan');

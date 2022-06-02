@@ -16,6 +16,8 @@
                 @csrf
                 @method('put')
                 @include('layouts.partials.input', ['name' => 'register_number', 'label' => 'nomor', 'required' => true, 'value' => $leterC->register_number])
+
+                @include('layouts.partials.input', ['name' => 'bin', 'label' => 'bin',  'value' => $leterC->bin])
                 
                 @include('layouts.partials.input', ['name' => 'name', 'label' => 'nawa wajib pajak', 'required' => true, 'value' => $leterC->name])
 
@@ -30,7 +32,7 @@
                             <img src="{{ asset('village/'.$village.'/leter-c/'.$leterC->scan) }}" alt="{{ $leterC->scan }}">
                         </div>
                     </div>
-                    <input type="file" name="path" id="path" value="{{ old('path') }}" required/>
+                    <input type="file" name="path" id="path" value="{{ old('path') }}"/>
                     <span>{{ $errors->first('path') }}</span>
                 </div>
                 <button type="submit" class="btn btn-primary">Simpan</button>
