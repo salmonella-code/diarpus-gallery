@@ -38,11 +38,11 @@ class UploadController extends Controller
         }
     }
 
-    public function deletePhoto($id)
+    public function deletePhoto($gallery,$id)
     {
         try {
             $photo = ModelsFile::findOrFail($id);
-            File::delete('photo/'.$photo->folder.'/'.$photo->name);
+            File::delete('field/'.$gallery.'/photo/'.$photo->folder.'/'.$photo->name);
             $photo->delete();
             return response()->json([
                 'success' => 'Berhasil hapus data!'

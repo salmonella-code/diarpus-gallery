@@ -14,14 +14,14 @@ class PhotoController extends Controller
 {
     function finder($slug)
     {
-        $result =  Field::where('slug',$slug)->firstOrFail();
+        $result =  Field::where('slug',$slug)->with('photos')->firstOrFail();
         return $result;
     }
 
-    public function index($gallery)
+    public function index($field)
     {
-        $galleries = $this->finder($gallery);
-        return view('photo.index', compact('galleries'));
+        $gallery = $this->finder($field);
+        return view('photo.index', compact('gallery'));
     }
 
     public function create($gallery)
@@ -38,12 +38,14 @@ class PhotoController extends Controller
             'date' => ['required', 'date']
         ]);
 
+        $field = $this->finder($gallery);
+
         DB::beginTransaction();
 
         try {
             $media = Gallery::create([
                 'user_id' => auth()->user()->id,
-                'field_id' => $this->finder($gallery)->id,
+                'field_id' => $field->id,
                 'name' => $request->name,
                 'slug' => SlugService::createSlug(Gallery::class, 'slug', $request->name),
                 'category' => 'photo',
@@ -52,13 +54,13 @@ class PhotoController extends Controller
             ]);
 
             if ($request->medias != null) {
-                if(!File::isDirectory('photo/'.$media->slug)){
-                    File::makeDirectory('photo/'.$media->slug, 0777, true, true);
+                if(!File::isDirectory('field/'.$field->slug.'/photo/'.$media->slug)){
+                    File::makeDirectory('field/'.$field->slug.'/photo/'.$media->slug, 0777, true, true);
                 }
             
                 foreach ($request->medias as $file) {
                     $old = 'tmp/uploads/'.$file;
-                    $new = 'photo/'.$media->slug.'/'.$file;
+                    $new = 'field/'.$field->slug.'/photo/'.$media->slug.'/'.$file;
                     File::move($old, $new);
                     $media->files()->create([
                         'name' => $file,
@@ -69,10 +71,10 @@ class PhotoController extends Controller
 
             DB::commit();
 
-            return redirect()->route('photo.index', $gallery)->withSuccess('Berhasil menambah arsip foto');
+            return redirect()->route('photo.index', $gallery)->withSuccess('Berhasil menambah arsip foto: '.$media->name);
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('photo.index', $gallery)->with('error',$e->getMessage());
+            return redirect()->route('photo.index', $gallery)->with('error', 'Gagal menambah arsip foto');
         }
 
     }
@@ -102,17 +104,23 @@ class PhotoController extends Controller
         DB::beginTransaction();
         try {
             $media = Gallery::findOrFail($photo);
+            $mediaOldName = $media->slug;
 
             $media->update([
                 'name' => $request->name,
                 'description' => $request->description,
+                'slug' => SlugService::createSlug(Gallery::class, 'slug', $request->name),
                 'activity' => Carbon::parse($request->date),
             ]);
+
+            if(isset($media->getChanges()['slug']) == true){
+                rename('field/'.$gallery.'/photo/'.$mediaOldName, 'field/'.$gallery.'/photo/'.$media->slug);
+            }
 
             if ($request->medias != null) {
                 foreach ($request->medias as $file) {
                     $old = 'tmp/uploads/'.$file;
-                    $new = 'photo/'.$media->slug.'/'.$file;
+                    $new = 'field/'.$gallery.'/photo/'.$media->slug.'/'.$file;
                     File::move($old, $new);
                     $media->files()->create([
                         'name' => $file,
@@ -123,7 +131,7 @@ class PhotoController extends Controller
 
             DB::commit();
 
-            return redirect()->route('photo.index', $gallery)->withSuccess('Berhasil update arsip foto');
+            return redirect()->route('photo.index', $gallery)->withSuccess('Berhasil update arsip foto: '.$media->name);
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->route('photo.index', $gallery)->with('error', $e->getMessage());
@@ -133,14 +141,14 @@ class PhotoController extends Controller
     public function destroy($gallery, $photo)
     {
         try {
-            $photo = Gallery::findOrFail($photo);
-            File::deleteDirectory('photo/'.$photo->files[0]->folder);
-            File::delete($photo->name.'.zip');
-            $photo->delete();
+            $media = Gallery::findOrFail($photo);
+            File::deleteDirectory('field/'.$gallery.'/photo/'.$media->slug);
+            File::delete($media->name.'.zip');
+            $media->delete();
 
-            return redirect()->route('photo.index', $gallery)->withSuccess('Berhasil hapus arsip foto');
+            return redirect()->route('photo.index', $gallery)->withSuccess('Berhasil hapus arsip foto: '.$media->name);
         } catch (\Exception $e) {
-            return redirect()->route('photo.index', $gallery)->with('error', $e->getMessage());
+            return redirect()->route('photo.index', $gallery)->with('error', 'Gagal menghapus arsip foto: '.$e->getMessage());
         }
     }
 
@@ -153,7 +161,7 @@ class PhotoController extends Controller
             $zip = new \ZipArchive();
             $zip->open($zip_file, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
 
-            $path = public_path('photo/'.$photo->files[0]->folder);
+            $path = public_path('field/'.$gallery.'/photo/'.$photo->files[0]->folder);
             $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path));
 
             foreach ($files as $file)
@@ -171,7 +179,7 @@ class PhotoController extends Controller
             $zip->close();
             return response()->download($zip_file);
         } catch (\Exception $e) {
-            return redirect()->route('photo.index', $gallery)->with('error', $e->getMessage());
+            return redirect()->route('photo.index', $gallery)->with('error', 'Gagal mendownload arsip foto');
         }
     }
 }

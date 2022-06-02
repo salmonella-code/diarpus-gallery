@@ -8,10 +8,10 @@
         <i class="fas fa-arrow-alt-circle-left fa-fw align-middle"></i> <span class="align-middle">Kembali</span>
     </a>
 
-    <a href="{{ route('photo.edit', ['gallery'=>$gallery, 'photo'=>$photo->id]) }}" class="btn btn-sm btn-warning me-3"><i class="fas fa-edit fa-fw align-middle"></i></a>
+    <a href="{{ route('photo.edit', ['field'=>$gallery, 'photo'=>$photo->id]) }}" class="btn btn-sm btn-warning me-3"><i class="fas fa-edit fa-fw align-middle"></i></a>
 
     <a href="#" onclick="return confirm('Apakah anda yakin ingin menghapus foto ini ??');">
-        <form action="{{ route('photo.destroy', ['gallery' => $gallery, 'photo' => $photo->id]) }}" method="post">
+        <form action="{{ route('photo.destroy', ['field' => $gallery, 'photo' => $photo->id]) }}" method="post">
             @csrf
             @method('delete')
             <button type="submit" class="btn btn-sm btn-danger">
@@ -28,7 +28,7 @@
                 @foreach ($photo->files as $key => $media )
                 <div class="carousel-item {{$key == 0 ? 'active' : '' }}">
                     <div class="product-wrap-lg">
-                        <img src="{{ asset('photo/'.$media->folder.'/'.$media->name) }}" class="card-img-top img-fluid" alt="{{ $media->name }}" id="photo">
+                        <img src="{{ asset('field/'.$gallery.'/photo/'.$media->folder.'/'.$media->name) }}" class="card-img-top img-fluid" alt="{{ $media->name }}" id="photo">
                     </div>
                 </div>
                 @endforeach

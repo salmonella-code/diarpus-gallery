@@ -29,14 +29,9 @@ class Field extends Model
         return $this->belongsToMany(User::class)->using(FieldUser::class);
     }
 
-    public function galleries()
-    {
-        return $this->hasMany(Gallery::class, 'field_id');
-    }
-
     public function photos()
     {
-        return $this->galleries()->where('category', 'photo');
+        return $this->hasMany(Gallery::class, 'field_id')->where('category', 'photo');
     }
 
     public function videos()

@@ -48,6 +48,10 @@ class LeterCController extends Controller
                 'scan' => $request->scan,
             ]);
 
+            if (!File::isDirectory('village/'.$village.'/leter-c')) {
+                File::makeDirectory('village/'.$village.'/leter-c', 0777, true, true);
+            }
+            
             $old = 'tmp/uploads/'.$request->scan;
             $new = 'village/'.$village.'/leter-c/'.$request->scan;
             File::move($old, $new);

@@ -39,5 +39,18 @@ class UserSeeder extends Seeder
         ]);
         $user->assignRole('user');
         $user->field()->attach(1);
+
+        $village = User::create([
+            'nip' => null,
+            'group' => null,
+            'position' => 'kepala desa',
+            'name' => 'ajol desa',
+            'contact' => '085789452309',
+            'email' => 'village@test.com',
+            'password' => Hash::make(12345678),
+            'avatar' => 'avatar.jpg'
+        ]);
+        $village->assignRole('village');
+        $village->field()->attach(1);
     }
 }

@@ -89,14 +89,14 @@ Route::middleware('auth')->group(function(){
     });
     
     // photo
-    Route::get('gallery/{gallery}/photo', [PhotoController::class, 'index'])->name('photo.index');
-    Route::get('gallery/{gallery}/photo/create', [PhotoController::class, 'create'])->name('photo.create');
-    Route::post('gallery/{gallery}/photo', [PhotoController::class, 'store'])->name('photo.store');
-    Route::get('gallery/{gallery}/photo/{photo}', [PhotoController::class, 'show'])->name('photo.show');
-    Route::get('gallery/{gallery}/photo/{photo}/edit', [PhotoController::class, 'edit'])->name('photo.edit');
-    Route::put('gallery/{gallery}/photo/{photo}', [PhotoController::class, 'update'])->name('photo.update');
-    Route::delete('gallery/{gallery}/photo/{photo}', [PhotoController::class, 'destroy'])->name('photo.destroy');
-    Route::get('gallery/{gallery}/photo/{photo}/download', [PhotoController::class, 'download'])->name('photo.download');
+    Route::get('/{field}/photo', [PhotoController::class, 'index'])->name('photo.index');
+    Route::get('/{field}/photo/create', [PhotoController::class, 'create'])->name('photo.create');
+    Route::post('/{field}/photo', [PhotoController::class, 'store'])->name('photo.store');
+    Route::get('/{field}/photo/{photo}/show', [PhotoController::class, 'show'])->name('photo.show');
+    Route::get('/{field}/photo/{photo}', [PhotoController::class, 'edit'])->name('photo.edit');
+    Route::put('/{field}/photo/{photo}', [PhotoController::class, 'update'])->name('photo.update');
+    Route::delete('/{field}/photo/{photo}', [PhotoController::class, 'destroy'])->name('photo.destroy');
+    Route::get('/{field}/photo/{photo}/download', [PhotoController::class, 'download'])->name('photo.download');
     // end photo
 
     // video
@@ -113,7 +113,7 @@ Route::middleware('auth')->group(function(){
     // uploader
     Route::post('upload/media', [UploadController::class, 'uploadMedia'])->name('upload.media');
     Route::delete('delete/media', [UploadController::class, 'destroyMedia'])->name('destroy.media');
-    Route::delete('/delete/photo/{id}', [UploadController::class, 'deletePhoto']);
+    Route::delete('/delete/photo/{media}/{id}', [UploadController::class, 'deletePhoto']);
     // uploader
 
     Route::get('profile', [ProfileController::class, 'index'])->name('profile.index');

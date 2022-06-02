@@ -16,7 +16,7 @@
 @section('content')
     <div class="card shadow">
         <div class="card-body">
-            <form action="{{ route('photo.update', ['gallery' => $gallery, 'photo' => $photo->id]) }}" method="post"
+            <form action="{{ route('photo.update', ['field' => $gallery, 'photo' => $photo->id]) }}" method="post"
                 enctype="multipart/form-data">
                 @csrf
                 @method('put')
@@ -60,7 +60,7 @@
                             @forelse ($photo->files as $file)
                             <div class="wrapper px-0 mx-sm-3 mx-0 mb-3 data-photo-id-{{ $file->id }}">
                                 <div class="thumb-wrap mb-1">
-                                    <img src="{{ asset('photo/'.$file->folder.'/'.$file->name) }}" alt="{{ $file->name }}">
+                                    <img src="{{ asset('field/'.$gallery.'/photo/'.$file->folder.'/'.$file->name) }}" alt="{{ $file->name }}">
                                 </div>
                                 <div class="d-grid gap-2">
                                     <button type="button" class="deletePhoto btn btn-outline-danger" data-id="{{ $file->id }}">Hapus</button>
@@ -89,7 +89,7 @@
                 var confirmation = confirm("Apakah anda yakin ingin menghapus foto ini ??");
                 if(confirmation){
                     $.ajax({
-                        url: "/delete/photo/" + id,
+                        url: "/delete/photo/" +'{{ $gallery }}/'+ id,
                         type: 'DELETE',
                         data: {
                             "id": id,
