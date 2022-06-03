@@ -49,7 +49,7 @@ class Gallery extends Model
         return $this->hasMany(File::class, 'gallery_id');
     }
 
-    public function activeVillage()
+    public function village()
     {
         return $this->belongsTo(ActiveVillage::class, 'active_village_id');
     }

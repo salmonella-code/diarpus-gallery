@@ -49,4 +49,9 @@ class ActiveVillage extends Model
     {
         return $this->hasMany(Gallery::class, 'active_village_id')->where('category', 'photo');
     }
+
+    public function videos()
+    {
+        return $this->hasMany(Gallery::class, 'active_village_id')->where('category', 'video');
+    }
 }

@@ -13,6 +13,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\UtilitiesController;
 use App\Http\Controllers\VideoController;
 use App\Http\Controllers\Village\PhotoController as VillagePhotoController;
+use App\Http\Controllers\Village\VideoController as VillageVideoController;
 use App\Http\Controllers\VillageUserController;
 use Illuminate\Support\Facades\Route;
 
@@ -100,6 +101,19 @@ Route::middleware('auth')->group(function(){
             Route::get('/{village}/{photo}/download', [VillagePhotoController::class, 'download'])->name('photo.download');
         });
         // end photo
+
+        Route::prefix('village-video')->group(function(){
+            // video
+            Route::get('/{village}/video', [VillageVideoController::class, 'index'])->name('video.index');
+            Route::get('/{village}/video/create', [VillageVideoController::class, 'create'])->name('video.create');
+            Route::post('/{village}/video', [VillageVideoController::class, 'store'])->name('video.store');
+            Route::get('/{village}/video/{video}', [VillageVideoController::class, 'show'])->name('video.show');
+            Route::get('/{village}/video/{video}/edit', [VillageVideoController::class, 'edit'])->name('video.edit');
+            Route::put('/{village}/video/{video}', [VillageVideoController::class, 'update'])->name('video.update');
+            Route::delete('/{village}/video/{video}', [VillageVideoController::class, 'destroy'])->name('video.destroy');
+            Route::get('/{village}/video/{video}/download', [VillageVideoController::class, 'download'])->name('video.download');
+            // end video
+        });
     });
     
     // photo
