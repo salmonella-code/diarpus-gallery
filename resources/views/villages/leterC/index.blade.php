@@ -40,7 +40,7 @@
             $('#leter-c-table').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: '{!! route('leterC.index', $village) !!}',
+                ajax: '{!! route('village.leterC.index', $village) !!}',
                 columns: [
                     { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
                     { data: 'register_number', name: 'register_number' },

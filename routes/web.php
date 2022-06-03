@@ -79,7 +79,7 @@ Route::middleware('auth')->group(function(){
         // end village user
     });
 
-    Route::middleware('role:admin|village')->prefix('village-photo')->name('village.')->group(function(){
+    Route::middleware('role:admin|village')->name('village.')->group(function(){
         Route::get('/{village}/leter-c', [LeterCController::class, 'index'])->name('leterC.index');
         Route::get('/{village}/leter-c/create', [LeterCController::class, 'create']);
         Route::post('/{village}/leter-c', [LeterCController::class, 'store']);
@@ -89,14 +89,16 @@ Route::middleware('auth')->group(function(){
         Route::delete('/{village}/leter-c/{id}', [LeterCController::class, 'destroy']);
 
          // photo
-        Route::get('/{village}', [VillagePhotoController::class, 'index'])->name('photo.index');
-        Route::get('/{village}/create', [VillagePhotoController::class, 'create'])->name('photo.create');
-        Route::post('/{village}', [VillagePhotoController::class, 'store'])->name('photo.store');
-        Route::get('/{village}/{photo}/show', [VillagePhotoController::class, 'show'])->name('photo.show');
-        Route::get('/{village}/{photo}', [VillagePhotoController::class, 'edit'])->name('photo.edit');
-        Route::put('/{village}/{photo}', [VillagePhotoController::class, 'update'])->name('photo.update');
-        Route::delete('/{village}/{photo}', [VillagePhotoController::class, 'destroy'])->name('photo.destroy');
-        Route::get('/{village}/{photo}/download', [VillagePhotoController::class, 'download'])->name('photo.download');
+        Route::prefix('village-photo')->group(function(){
+            Route::get('/{village}', [VillagePhotoController::class, 'index'])->name('photo.index');
+            Route::get('/{village}/create', [VillagePhotoController::class, 'create'])->name('photo.create');
+            Route::post('/{village}', [VillagePhotoController::class, 'store'])->name('photo.store');
+            Route::get('/{village}/{photo}/show', [VillagePhotoController::class, 'show'])->name('photo.show');
+            Route::get('/{village}/{photo}', [VillagePhotoController::class, 'edit'])->name('photo.edit');
+            Route::put('/{village}/{photo}', [VillagePhotoController::class, 'update'])->name('photo.update');
+            Route::delete('/{village}/{photo}', [VillagePhotoController::class, 'destroy'])->name('photo.destroy');
+            Route::get('/{village}/{photo}/download', [VillagePhotoController::class, 'download'])->name('photo.download');
+        });
         // end photo
     });
     

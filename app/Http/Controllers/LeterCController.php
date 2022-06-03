@@ -57,9 +57,9 @@ class LeterCController extends Controller
             $new = 'village/'.$village.'/leter-c/'.$request->scan;
             File::move($old, $new);
 
-            return redirect()->route('leterC.index', $village)->withSuccess('Berhasil menambah data leter c: '. $LeterC->name);
+            return redirect()->route('village.leterC.index', $village)->withSuccess('Berhasil menambah data leter c: '. $LeterC->name);
         } catch (\Exception $e) {
-            return redirect()->route('leterC.index', $village)->with('error', 'Gagal menambah data leter c');
+            return redirect()->route('village.leterC.index', $village)->with('error', 'Gagal menambah data leter c');
         }
     }
 
@@ -100,9 +100,9 @@ class LeterCController extends Controller
                 File::move($old, $new);
             }
 
-            return redirect()->route('leterC.index', $village)->withSuccess('Berhasil update data leter c: '. $leterC->name);
+            return redirect()->route('village.leterC.index', $village)->withSuccess('Berhasil update data leter c: '. $leterC->name);
         } catch (\Exception $e) {
-            return redirect()->route('leterC.index', $village)->with('error', 'Gagal update data leter c: '. $e->getMessage());
+            return redirect()->route('village.leterC.index', $village)->with('error', 'Gagal update data leter c: '. $e->getMessage());
         }
     }
 
@@ -113,9 +113,9 @@ class LeterCController extends Controller
             File::delete('village/'.$village.'/leter-c/'.$leterC->scan);
             $leterC->delete();
             
-            return redirect()->route('leterC.index', $village)->withSuccess('Berhasil hapus data leter c: '. $leterC->name);
+            return redirect()->route('village.leterC.index', $village)->withSuccess('Berhasil hapus data leter c: '. $leterC->name);
         } catch (\Exception $e) {
-            return redirect()->route('leterC.index', $village)->with('error', 'Gagal hapus data leter c');
+            return redirect()->route('village.leterC.index', $village)->with('error', 'Gagal hapus data leter c');
         }
     }
 }
