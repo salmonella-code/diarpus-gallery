@@ -24,13 +24,13 @@ class VillageRequest extends FormRequest
     public function rules()
     {
         if (request()->isMethod('put')) {
-            $email = 'unique:villages,email,' . $this->id;
-            $phone = 'unique:villages,phone,' . $this->id;
+            $email = 'unique:active_villages,email,' . $this->id;
+            $phone = 'unique:active_villages,phone,' . $this->id;
         }
         
         if (request()->isMethod('post')) {
-            $email = 'unique:villages,email';
-            $phone = 'unique:villages,phone';
+            $email = 'unique:active_villages,email';
+            $phone = 'unique:active_villages,phone';
         }
 
         return [
