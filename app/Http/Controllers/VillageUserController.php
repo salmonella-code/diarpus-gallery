@@ -48,7 +48,7 @@ class VillageUserController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return redirect('/village-user')->with('error', 'Gagal menambah user desa '.$e->getMessage());
+            return redirect('/village-user')->with('error', 'Gagal menambah user desa');
         }
     }
 

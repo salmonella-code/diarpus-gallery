@@ -139,7 +139,7 @@ class PhotoController extends Controller
             return redirect()->route('village.photo.index', $gallery)->withSuccess('Berhasil update arsip foto: '.$media->name);
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('village.photo.index', $gallery)->with('error', $e->getMessage());
+            return redirect()->route('village.photo.index', $gallery)->with('error', 'Gagal update arsip foto');
         }
     }
 
@@ -153,7 +153,7 @@ class PhotoController extends Controller
 
             return redirect()->route('village.photo.index', $gallery)->withSuccess('Berhasil hapus arsip foto: '.$media->name);
         } catch (\Exception $e) {
-            return redirect()->route('village.photo.index', $gallery)->with('error', 'Gagal menghapus arsip foto: '.$e->getMessage());
+            return redirect()->route('village.photo.index', $gallery)->with('error', 'Gagal menghapus arsip foto');
         }
     }
 

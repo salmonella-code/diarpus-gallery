@@ -102,7 +102,7 @@ class LeterCController extends Controller
 
             return redirect()->route('village.leterC.index', $village)->withSuccess('Berhasil update data leter c: '. $leterC->name);
         } catch (\Exception $e) {
-            return redirect()->route('village.leterC.index', $village)->with('error', 'Gagal update data leter c: '. $e->getMessage());
+            return redirect()->route('village.leterC.index', $village)->with('error', 'Gagal update data leter c');
         }
     }
 
