@@ -13,7 +13,7 @@
                 <div class="col-12 col-sm-4">
                     <div class="card border-secondary shadow">
                         <div class="product-wrap">
-                            @if(!empty($item->files))
+                            @if(!$item->files->isEmpty())
                                 <img src="{{ asset('field/'.$gallery->slug.'/photo/'.$item->files[0]->folder.'/'.$item->files[0]->name) }}" class="card-img-top img-fluid" alt="foto" id="photo">
                             @endif
                             <div class="card-img-overlay d-flex align-items-center justify-content-center">

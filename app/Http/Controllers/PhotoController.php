@@ -81,14 +81,14 @@ class PhotoController extends Controller
 
     public function show($gallery, $photo)
     {
-        $photo = Gallery::findOrFail($photo);
+        $photo = Gallery::with('field')->with('files')->findOrFail($photo);
 
         return view('photo.show', compact('gallery', 'photo'));
     }
 
     public function edit($gallery, $photo)
     {
-        $photo = Gallery::findOrFail($photo);
+        $photo = Gallery::with('field')->with('files')->findOrFail($photo);
 
         return view('photo.edit', compact('gallery', 'photo'));
     }
@@ -115,6 +115,11 @@ class PhotoController extends Controller
 
             if(isset($media->getChanges()['slug']) == true){
                 rename('field/'.$gallery.'/photo/'.$mediaOldName, 'field/'.$gallery.'/photo/'.$media->slug);
+                foreach ($media->files as $file) {
+                    $file->update([
+                        'folder' => $media->slug
+                    ]);
+                }
             }
 
             if ($request->medias != null) {
