@@ -69,4 +69,20 @@ class UploadController extends Controller
             ]);
         }
     }
+
+    public function deleteVideo($gallery, $id)
+    {
+        try {
+            $video = ModelsFile::findOrFail($id);
+            File::delete('field/'.$gallery.'/video/'.$video->folder.'/'.$video->name);
+            $video->delete();
+            return response()->json([
+                'success' => 'Berhasil hapus data!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Gagal hapus data!'
+            ]);
+        }
+    }
 }

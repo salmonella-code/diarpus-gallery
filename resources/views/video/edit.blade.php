@@ -16,7 +16,7 @@
 @section('content')
     <div class="card shadow">
         <div class="card-body">
-            <form action="{{ route('video.update', ['gallery' => $gallery, 'video' => $video->id]) }}" method="post"
+            <form action="{{ route('video.update', ['field' => $gallery, 'video' => $video->id]) }}" method="post"
                 enctype="multipart/form-data">
                 @csrf
                 @method('put')
@@ -61,7 +61,7 @@
                             <div class="wrapper px-0 mx-sm-3 mx-0 mb-3 data-video-id-{{ $file->id }}">
                                 <div class="thumb-wrap mb-1">
                                     <video controls="controls" preload="metadata">
-                                        <source src="{{ asset('video/'.$file->folder.'/'.$file->name) }}" type="video/mp4">
+                                        <source src="{{ asset('field/'.$gallery.'/video/'.$file->folder.'/'.$file->name) }}" type="video/mp4">
                                     </video>
                                 </div>
                                 <div class="d-grid gap-2">
@@ -88,10 +88,10 @@
     <script>
         $(".deletevideo").click(function() {
                 var id = $(this).data("id");
-                var confirmation = confirm("Apakah anda yakin ingin menghapus foto ini ??");
+                var confirmation = confirm("Apakah anda yakin ingin menghapus video ini ??");
                 if(confirmation){
                     $.ajax({
-                        url: "/delete/video/" + id,
+                        url: '/delete/video/'+ '{{ $gallery }}/' + id,
                         type: 'DELETE',
                         data: {
                             "id": id,

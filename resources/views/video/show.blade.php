@@ -8,10 +8,10 @@
         <i class="fas fa-arrow-alt-circle-left fa-fw align-middle"></i> <span class="align-middle">Kembali</span>
     </a>
 
-    <a href="{{ route('video.edit', ['gallery'=>$gallery, 'video'=>$video->id]) }}" class="btn btn-sm btn-warning me-3"><i class="fas fa-edit fa-fw align-middle"></i></a>
+    <a href="{{ route('video.edit', ['field'=>$gallery, 'video'=>$video->id]) }}" class="btn btn-sm btn-warning me-3"><i class="fas fa-edit fa-fw align-middle"></i></a>
 
     <a href="#" onclick="return confirm('Apakah anda yakin ingin menghapus video ini ??');">
-        <form action="{{ route('video.destroy', ['gallery' => $gallery, 'video' => $video->id]) }}" method="post">
+        <form action="{{ route('video.destroy', ['field' => $gallery, 'video' => $video->id]) }}" method="post">
             @csrf
             @method('delete')
             <button type="submit" class="btn btn-sm btn-danger">
@@ -25,7 +25,7 @@
         <div class="row row-cols-1 row-cols-sm-2 justify-content-between">
             @foreach ($video->files as $key => $item )
             <video class="col mb-3" controls="controls" preload="metadata">
-                <source src="{{ asset('video/'.$item->folder.'/'.$item->name) }}" type="video/mp4">
+                <source src="{{ asset('field/'.$gallery.'/video/'.$item->folder.'/'.$item->name) }}" type="video/mp4">
             </video>  
             @endforeach
         </div>

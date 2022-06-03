@@ -114,14 +114,14 @@ Route::middleware('auth')->group(function(){
     // end photo
 
     // video
-    Route::get('gallery/{gallery}/video', [VideoController::class, 'index'])->name('video.index');
-    Route::get('gallery/{gallery}/video/create', [VideoController::class, 'create'])->name('video.create');
-    Route::post('gallery/{gallery}/video', [VideoController::class, 'store'])->name('video.store');
-    Route::get('gallery/{gallery}/video/{video}', [VideoController::class, 'show'])->name('video.show');
-    Route::get('gallery/{gallery}/video/{video}/edit', [VideoController::class, 'edit'])->name('video.edit');
-    Route::put('gallery/{gallery}/video/{video}', [VideoController::class, 'update'])->name('video.update');
-    Route::delete('gallery/{gallery}/video/{video}', [VideoController::class, 'destroy'])->name('video.destroy');
-    Route::get('gallery/{gallery}/video/{video}/download', [VideoController::class, 'download'])->name('video.download');
+    Route::get('/{field}/video', [VideoController::class, 'index'])->name('video.index');
+    Route::get('/{field}/video/create', [VideoController::class, 'create'])->name('video.create');
+    Route::post('/{field}/video', [VideoController::class, 'store'])->name('video.store');
+    Route::get('/{field}/video/{video}', [VideoController::class, 'show'])->name('video.show');
+    Route::get('/{field}/video/{video}/edit', [VideoController::class, 'edit'])->name('video.edit');
+    Route::put('/{field}/video/{video}', [VideoController::class, 'update'])->name('video.update');
+    Route::delete('/{field}/video/{video}', [VideoController::class, 'destroy'])->name('video.destroy');
+    Route::get('/{field}/video/{video}/download', [VideoController::class, 'download'])->name('video.download');
     // end video
     
     // uploader
@@ -129,6 +129,7 @@ Route::middleware('auth')->group(function(){
     Route::delete('delete/media', [UploadController::class, 'destroyMedia'])->name('destroy.media');
     Route::delete('/delete/photo/{media}/{id}', [UploadController::class, 'deletePhoto']);
     Route::delete('/village-media/delete/photo/{media}/{id}', [UploadController::class, 'deletePhotoVillage']);
+    Route::delete('/delete/video/{media}/{id}', [UploadController::class, 'deleteVideo']);
     // uploader
 
     Route::get('profile', [ProfileController::class, 'index'])->name('profile.index');

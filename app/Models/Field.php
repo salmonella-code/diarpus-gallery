@@ -36,6 +36,6 @@ class Field extends Model
 
     public function videos()
     {
-        return $this->galleries()->where('category', 'video');
+        return$this->hasMany(Gallery::class, 'field_id')->where('category', 'video');
     }
 }

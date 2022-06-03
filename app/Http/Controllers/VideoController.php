@@ -9,27 +9,24 @@ use Cviebrock\EloquentSluggable\Services\SlugService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Str;
 
 class VideoController extends Controller
 {
     function finder($slug)
     {
-        $result =  Field::where('slug',$slug)->firstOrFail();
+        $result =  Field::where('slug',$slug)->with('videos')->firstOrFail();
         return $result;
     }
 
-    public function index($gallery)
+    public function index($field)
     {
-        $galleries = $this->finder($gallery);
- 
-        return view('video.index', compact('galleries'));
+        $gallery = $this->finder($field);
+        return view('video.index', compact('gallery'));
     }
 
     public function create($gallery)
     {
-        $galleries =  $this->finder($gallery);
-
+        $galleries = $this->finder($gallery);
         return view('video.create', compact('galleries'));
     }
 
@@ -41,12 +38,14 @@ class VideoController extends Controller
             'date' => ['required', 'date']
         ]);
 
+        $field = $this->finder($gallery);
+
         DB::beginTransaction();
+
         try {
-    
             $media = Gallery::create([
                 'user_id' => auth()->user()->id,
-                'field_id' => $this->finder($gallery)->id,
+                'field_id' => $field->id,
                 'name' => $request->name,
                 'slug' => SlugService::createSlug(Gallery::class, 'slug', $request->name),
                 'category' => 'video',
@@ -55,13 +54,13 @@ class VideoController extends Controller
             ]);
 
             if ($request->medias != null) {
-                if(!File::isDirectory('video/'.$media->slug)){
-                    File::makeDirectory('video/'.$media->slug, 0777, true, true);
+                if(!File::isDirectory('field/'.$field->slug.'/video/'.$media->slug)){
+                    File::makeDirectory('field/'.$field->slug.'/video/'.$media->slug, 0777, true, true);
                 }
             
                 foreach ($request->medias as $file) {
                     $old = 'tmp/uploads/'.$file;
-                    $new = 'video/'.$media->slug.'/'.$file;
+                    $new = 'field/'.$field->slug.'/video/'.$media->slug.'/'.$file;
                     File::move($old, $new);
                     $media->files()->create([
                         'name' => $file,
@@ -69,31 +68,32 @@ class VideoController extends Controller
                     ]);
                 }
             }
+
             DB::commit();
 
-            return redirect()->route('video.index', $gallery)->withSuccess('Berhasil menambah arsip video');
+            return redirect()->route('video.index', $gallery)->withSuccess('Berhasil menambah arsip video: '.$media->name);
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('video.index', $gallery)->with('error',$e->getMessage());
+            return redirect()->route('video.index', $gallery)->with('error', 'Gagal menambah arsip video');
         }
 
     }
 
     public function show($gallery, $video)
     {
-        $video = Gallery::findOrFail($video);
+        $video = Gallery::with('field')->with('files')->findOrFail($video);
 
         return view('video.show', compact('gallery', 'video'));
     }
 
     public function edit($gallery, $video)
     {
-        $video = Gallery::findOrFail($video);
+        $video = Gallery::with('field')->with('files')->findOrFail($video);
 
         return view('video.edit', compact('gallery', 'video'));
     }
 
-    public function update(Request $request,$gallery, $video)
+    public function update(Request $request, $gallery, $video)
     {
         $request->validate([
             'name' => ['required', 'string'],
@@ -104,17 +104,28 @@ class VideoController extends Controller
         DB::beginTransaction();
         try {
             $media = Gallery::findOrFail($video);
+            $mediaOldName = $media->slug;
 
             $media->update([
                 'name' => $request->name,
                 'description' => $request->description,
+                'slug' => SlugService::createSlug(Gallery::class, 'slug', $request->name),
                 'activity' => Carbon::parse($request->date),
             ]);
+
+            if(isset($media->getChanges()['slug']) == true){
+                rename('field/'.$gallery.'/video/'.$mediaOldName, 'field/'.$gallery.'/video/'.$media->slug);
+                foreach ($media->files as $file) {
+                    $file->update([
+                        'folder' => $media->slug
+                    ]);
+                }
+            }
 
             if ($request->medias != null) {
                 foreach ($request->medias as $file) {
                     $old = 'tmp/uploads/'.$file;
-                    $new = 'video/'.$media->slug.'/'.$file;
+                    $new = 'field/'.$gallery.'/video/'.$media->slug.'/'.$file;
                     File::move($old, $new);
                     $media->files()->create([
                         'name' => $file,
@@ -125,24 +136,24 @@ class VideoController extends Controller
 
             DB::commit();
 
-            return redirect()->route('video.index', $gallery)->withSuccess('Berhasil update arsip video');
+            return redirect()->route('video.index', $gallery)->withSuccess('Berhasil update arsip video: '.$media->name);
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('video.index', $gallery)->with('error', $e->getMessage());
+            return redirect()->route('video.index', $gallery)->with('error', 'Gagal update arsip video');
         }
     }
 
     public function destroy($gallery, $video)
     {
         try {
-            $video = Gallery::findOrFail($video);
-            File::deleteDirectory('video/'.$video->files[0]->folder);
-            File::delete($video->name.'.zip');
-            $video->delete();
+            $media = Gallery::findOrFail($video);
+            File::deleteDirectory('field/'.$gallery.'/video/'.$media->slug);
+            File::delete($media->name.'.zip');
+            $media->delete();
 
-            return redirect()->route('video.index', $gallery)->withSuccess('Berhasil hapus arsip video');
+            return redirect()->route('video.index', $gallery)->withSuccess('Berhasil hapus arsip video: '.$media->name);
         } catch (\Exception $e) {
-            return redirect()->route('video.index', $gallery)->with('error', $e->getMessage());
+            return redirect()->route('video.index', $gallery)->with('error', 'Gagal menghapus arsip video');
         }
     }
 
@@ -155,7 +166,7 @@ class VideoController extends Controller
             $zip = new \ZipArchive();
             $zip->open($zip_file, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
 
-            $path = public_path('video/'.$video->files[0]->folder);
+            $path = public_path('field/'.$gallery.'/video/'.$video->files[0]->folder);
             $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path));
 
             foreach ($files as $file)
@@ -173,7 +184,7 @@ class VideoController extends Controller
             $zip->close();
             return response()->download($zip_file);
         } catch (\Exception $e) {
-            return redirect()->route('video.index', $gallery)->with('error', $e->getMessage());
+            return redirect()->route('video.index', $gallery)->with('error', 'Gagal mendownload arsip video');
         }
     }
 }
