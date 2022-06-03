@@ -44,60 +44,49 @@
                         </li>
 
                         @role('admin')
-                        <li class="sidebar-item {{ request()->is('villages*') ? 'active' : '' }} ">
-                            <a href="{{ route('village.index') }}" class='sidebar-link'>
-                                <i class="fas fa-fw fa-map"></i>
-                                <span>Desa</span>
-                            </a>
-                        </li>
+                            <li class="sidebar-item {{ request()->is('villages*') ? 'active' : '' }} ">
+                                <a href="{{ route('village.index') }}" class='sidebar-link'>
+                                    <i class="fas fa-fw fa-map"></i>
+                                    <span>Desa</span>
+                                </a>
+                            </li>
 
-                        <li class="sidebar-item {{ request()->is('field*') ? 'active' : '' }} ">
-                            <a href="{{ route('field.index') }}" class='sidebar-link'>
-                                <i class="fas fa-fw fa-user-check"></i>
-                                <span>Bidang</span>
-                            </a>
-                        </li>
+                            <li class="sidebar-item {{ request()->is('field*') ? 'active' : '' }} ">
+                                <a href="{{ route('field.index') }}" class='sidebar-link'>
+                                    <i class="fas fa-fw fa-user-check"></i>
+                                    <span>Bidang</span>
+                                </a>
+                            </li>
 
-                        <li class="sidebar-item {{ request()->is('admin*') ? 'active' : (request()->is('user*') ? 'active' : '') }} has-sub">
-                            <a href="#" class='sidebar-link'>
-                                <i class="fas fa-fw fa-users" aria-hidden="true"></i>
-                                <span>User</span>
-                            </a>
-                            <ul class="submenu ">
-                                <li class="submenu-item {{ request()->is('admin*') ? 'active' : '' }}">
-                                    <a href="{{ route('admin.index') }}">Admin</a>
-                                </li>
-                                <li class="submenu-item {{ request()->is('user*') ? 'active' : '' }}">
-                                    <a href="{{ route('user.index') }}">User</a>
-                                </li>
-                                <li class="submenu-item {{ request()->is('village-user*') ? 'active' : '' }}">
-                                    <a href="{{ url('/village-user') }}">Desa</a>
-                                </li>
-                            </ul>
-                        </li>
+                            <li class="sidebar-item {{ request()->is('admin*') ? 'active' : (request()->is('user*') ? 'active' : '') }} has-sub">
+                                <a href="#" class='sidebar-link'>
+                                    <i class="fas fa-fw fa-users" aria-hidden="true"></i>
+                                    <span>User</span>
+                                </a>
+                                <ul class="submenu ">
+                                    <li class="submenu-item {{ request()->is('admin*') ? 'active' : '' }}">
+                                        <a href="{{ route('admin.index') }}">Admin</a>
+                                    </li>
+                                    <li class="submenu-item {{ request()->is('user*') ? 'active' : '' }}">
+                                        <a href="{{ route('user.index') }}">User</a>
+                                    </li>
+                                    <li class="submenu-item {{ request()->is('village-user*') ? 'active' : '' }}">
+                                        <a href="{{ url('/village-user') }}">Desa</a>
+                                    </li>
+                                </ul>
+                            </li>
 
-                        @include('layouts.partials.navbar')
+                            @include('layouts.partials.navbar')
                         
                         @endrole
 
-                        @if (auth()->user()->role == 'user')
-                        @foreach (App\Models\Field::where('id', auth()->user()->field_id)->get() as $field)
-                        <li class="sidebar-item {{ request()->is('gallery/' . $field->id . '*') ? 'active' : '' }} has-sub">
-                            <a href="#" class='sidebar-link'>
-                                <i class="fas fa-fw fa-users" aria-hidden="true"></i>
-                                <span>{{ $field->name }}</span>
-                            </a>
-                            <ul class="submenu ">
-                                <li class="submenu-item {{ request()->is('gallery/' . $field->id . '/photo*') ? 'active' : '' }}">
-                                    <a href="{{ route('photo.index', $field->id) }}">Photo</a>
-                                </li>
-                                <li class="submenu-item {{ request()->is('gallery/' . $field->id . '/video*') ? 'active' : '' }}">
-                                    <a href="{{ route('video.index', $field->id) }}">Video</a>
-                                </li>
-                            </ul>
-                        </li>
-                        @endforeach
-                        @endif
+                        @role('user')
+                            @include('layouts.partials.fieldNavbar')
+                        @endrole
+
+                        @role('village')
+                            @include('layouts.partials.villageNavbar')
+                        @endrole
                     </ul>
                 </div>
                 <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>

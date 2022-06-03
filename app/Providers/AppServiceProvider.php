@@ -29,9 +29,24 @@ class AppServiceProvider extends ServiceProvider
     {
         View::composer('layouts.partials.navbar', function($view)
         {
+
             $fields = Field::all();
             $villages = ActiveVillage::all();
             $view->with('fields', $fields)->with('villages', $villages);
+        });
+
+        View::composer('layouts.partials.fieldNavbar', function($view)
+        {
+            
+            $field = auth()->user()->field->first();
+            $view->with('field', $field);
+        });
+
+        View::composer('layouts.partials.villageNavbar', function($view)
+        {
+            
+            $village = auth()->user()->village->first();
+            $view->with('village', $village);
         });
     }
 }

@@ -51,6 +51,6 @@ class UserSeeder extends Seeder
             'avatar' => 'avatar.jpg'
         ]);
         $village->assignRole('village');
-        $village->field()->attach(1);
+        $village->village()->attach(1);
     }
 }
