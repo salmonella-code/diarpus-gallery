@@ -27,10 +27,10 @@
         </a>
         <ul class="submenu ">
             <li class="submenu-item {{ request()->is($village->slug . '/leter-c*') ? 'active' : '' }}">
-                <a href="{{ route('leterC.index', $village->slug) }}">Leter C</a>
+                <a href="{{ route('village.leterC.index', $village->slug) }}">Leter C</a>
             </li>
             <li class="submenu-item {{ request()->is('gallery/' . $village->slug . '/photo*') ? 'active' : '' }}">
-                <a href="{{ route('photo.index', $village->slug) }}">Photo</a>
+                <a href="{{ route('village.photo.index', $village->slug) }}">Photo</a>
             </li>
             <li class="submenu-item {{ request()->is('gallery/' . $village->slug . '/video*') ? 'active' : '' }}">
                 <a href="{{ route('video.index', $village->slug) }}">Video</a>

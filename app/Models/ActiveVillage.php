@@ -44,4 +44,9 @@ class ActiveVillage extends Model
     {
         return $this->hasMany(LeterC::class, 'village_id');
     }
+
+    public function photos()
+    {
+        return $this->hasMany(Gallery::class, 'active_village_id')->where('category', 'photo');
+    }
 }

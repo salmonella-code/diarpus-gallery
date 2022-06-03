@@ -53,4 +53,20 @@ class UploadController extends Controller
             ]);
         }
     }
+
+    public function deletePhotoVillage($gallery,$id)
+    {
+        try {
+            $photo = ModelsFile::findOrFail($id);
+            File::delete('village/'.$gallery.'/photo/'.$photo->folder.'/'.$photo->name);
+            $photo->delete();
+            return response()->json([
+                'success' => 'Berhasil hapus data!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Gagal hapus data!'
+            ]);
+        }
+    }
 }

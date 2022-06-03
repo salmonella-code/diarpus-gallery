@@ -12,6 +12,7 @@ use App\Http\Controllers\UploadController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UtilitiesController;
 use App\Http\Controllers\VideoController;
+use App\Http\Controllers\Village\PhotoController as VillagePhotoController;
 use App\Http\Controllers\VillageUserController;
 use Illuminate\Support\Facades\Route;
 
@@ -78,7 +79,7 @@ Route::middleware('auth')->group(function(){
         // end village user
     });
 
-    Route::middleware('role:admin|village')->group(function(){
+    Route::middleware('role:admin|village')->prefix('village-photo')->name('village.')->group(function(){
         Route::get('/{village}/leter-c', [LeterCController::class, 'index'])->name('leterC.index');
         Route::get('/{village}/leter-c/create', [LeterCController::class, 'create']);
         Route::post('/{village}/leter-c', [LeterCController::class, 'store']);
@@ -86,6 +87,17 @@ Route::middleware('auth')->group(function(){
         Route::get('/{village}/leter-c/{id}', [LeterCController::class, 'edit']);
         Route::put('/{village}/leter-c/{id}', [LeterCController::class, 'update']);
         Route::delete('/{village}/leter-c/{id}', [LeterCController::class, 'destroy']);
+
+         // photo
+        Route::get('/{village}', [VillagePhotoController::class, 'index'])->name('photo.index');
+        Route::get('/{village}/create', [VillagePhotoController::class, 'create'])->name('photo.create');
+        Route::post('/{village}', [VillagePhotoController::class, 'store'])->name('photo.store');
+        Route::get('/{village}/{photo}/show', [VillagePhotoController::class, 'show'])->name('photo.show');
+        Route::get('/{village}/{photo}', [VillagePhotoController::class, 'edit'])->name('photo.edit');
+        Route::put('/{village}/{photo}', [VillagePhotoController::class, 'update'])->name('photo.update');
+        Route::delete('/{village}/{photo}', [VillagePhotoController::class, 'destroy'])->name('photo.destroy');
+        Route::get('/{village}/{photo}/download', [VillagePhotoController::class, 'download'])->name('photo.download');
+        // end photo
     });
     
     // photo
@@ -114,6 +126,7 @@ Route::middleware('auth')->group(function(){
     Route::post('upload/media', [UploadController::class, 'uploadMedia'])->name('upload.media');
     Route::delete('delete/media', [UploadController::class, 'destroyMedia'])->name('destroy.media');
     Route::delete('/delete/photo/{media}/{id}', [UploadController::class, 'deletePhoto']);
+    Route::delete('/village-media/delete/photo/{media}/{id}', [UploadController::class, 'deletePhotoVillage']);
     // uploader
 
     Route::get('profile', [ProfileController::class, 'index'])->name('profile.index');

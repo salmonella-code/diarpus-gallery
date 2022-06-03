@@ -13,6 +13,7 @@ class Gallery extends Model
     protected $fillable = [
         'user_id', 
         'field_id', 
+        'active_village_id',
         'name',
         'slug',
         'category', 
@@ -46,5 +47,10 @@ class Gallery extends Model
     public function files()
     {
         return $this->hasMany(File::class, 'gallery_id');
+    }
+
+    public function activeVillage()
+    {
+        return $this->belongsTo(ActiveVillage::class, 'active_village_id');
     }
 }
